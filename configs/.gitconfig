@@ -1,0 +1,17 @@
+[merge]
+	ff = false
+[pull]
+	rebase = true
+[rebase]
+	autoStash = true
+[alias]
+	l = log --graph --all
+	s = status
+	t = tag --sort=-v:refname # reverse chronological semver order
+[url "https://"]
+	insteadOf = git://
+[push]
+	followTags = true
+[core]
+	editor = code --wait
+	ignorecase = true
