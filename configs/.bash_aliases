@@ -11,3 +11,5 @@ alias ....="cd ../../.."
 
 alias dc="docker-compose"
 alias dc-tail="docker-compose logs --tail=10 -f"
+
+alias nrs="npm run-script"
