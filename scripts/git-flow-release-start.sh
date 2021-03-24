@@ -28,7 +28,6 @@ git checkout master
 git fetch
 git reset --hard origin/master
 git checkout develop
-mversion $1
 git checkout -b release/$1
 
 echo "Make release changes to this repository. Run \"grf\" to complete the release."
