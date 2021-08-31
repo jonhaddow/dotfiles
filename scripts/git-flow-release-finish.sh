@@ -14,6 +14,7 @@ dirty=`cat $DIRTY_FILE`
 tag=`cat $TAG_FILE`
 
 echo -e "\nrelease finish...\n"
+git commit -am "Bump version: $tag"
 git checkout master
 git merge release/$tag
 git tag $tag
