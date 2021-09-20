@@ -18,8 +18,8 @@ git commit -am "Bump version: $tag"
 git checkout master
 git merge release/$tag
 git tag $tag
-git push origin $tag
 git push
+git push origin $tag
 git checkout develop
 git merge release/$tag
 git branch -d release/$tag
