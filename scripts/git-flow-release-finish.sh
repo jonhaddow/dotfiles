@@ -18,12 +18,10 @@ git commit -am "Bump version: $tag"
 git checkout master
 git merge release/$tag
 git tag -a $tag
-git push origin $tag
-git push
 git checkout develop
 git merge release/$tag
 git branch -d release/$tag
-git push
+git push origin develop master
 
 if [ "$dirty" = true ]
 then
