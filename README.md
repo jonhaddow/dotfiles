@@ -16,7 +16,7 @@ Add the following to your `~/.gitconfig` file:
 
 ```
 [include]
-    path = <dotfiles_location>/configs/.gitconfig
+    path = ~/dotfiles/configs/.gitconfig
 ```
 
 If you want scripts to be available in non-bash shells (e.g. powershell), then update the PATH environment variables to include the `scripts` folder.
