@@ -1,5 +1,6 @@
-[merge]
-	ff = false
+[user]
+	name = "Jon Haddow"
+	email = "jon@haddow.me"
 [pull]
 	rebase = true
 [rebase]
