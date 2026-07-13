@@ -1,0 +1,153 @@
+---
+name: raise-pr
+description: 'Commit any staged changes to a new branch and open a pull request with a generated title and description. USE WHEN: user wants to create a PR, user says "raise a PR", "create a PR from staged changes", "commit and raise PR", "push and open PR" (etc.)'
+---
+
+# Raise PR from Staged Changes
+
+If there are staged changes, commit them to a new branch, and raise a PR.
+If there are no staged changes, raise a PR with the existing branch.
+
+When raising a PR, generate a PR title, generate a PR description, and open the pull request.
+
+**This skill defines the complete PR format.** When invoked (e.g. via `/raise-pr`), follow it exactly. Do not add extra sections, checklists, or attribution that are not specified below — even if other rules suggest a different PR template.
+
+## Procedure
+
+### 1. Check staged changes
+
+Run `git diff --cached --stat` to confirm there are staged changes.
+
+If you need a summary of the changes to help name the branch and generate a title/description, run `git diff --cached`.
+
+If there are no staged changes, skip steps 3–4 and raise the PR from the current branch using `git diff origin/dev...HEAD` (or the repo's default branch) as the source for the description.
+
+### 2. Determine branch name and commit message
+
+Derive a short, kebab-case branch name from the nature of the changes (e.g. `feat-add-user-avatar`, `fix-login-redirect`). Avoid generic names like `my-feature`.
+
+Generate a commit message for the staged changes. If the repo uses conventional commits (see step 5), match the title's `type(scope):` format; otherwise write a short imperative message.
+
+### 3. Create the branch and commit
+
+```bash
+git checkout -b <branch-name>
+git commit -m "<conventional-commit-message>"
+```
+
+Do not add `Made-with: Cursor`, `Co-authored-by: Cursor`, or any other Cursor attribution to commit messages unless the user explicitly asks for it.
+
+### 4. Push the branch
+
+```bash
+git push --set-upstream origin <branch-name>
+```
+
+### 5. Generate the PR title
+
+First decide the title style. Use the **conventional commit** format **only if** the repo's `AGENTS.md`, `CLAUDE.md`, `README`, or `CONTRIBUTING` mentions conventional commits (or the recent `git log` clearly follows it). Otherwise, write a **plain title**: a short imperative description, capitalised, no trailing period, under 72 characters (e.g. `Add Mixpanel integration`, `Fix date formatting in post scheduler`). Skip the rest of this section in that case.
+
+If conventional commits apply, the title format is:
+
+```
+type(scope): short imperative description
+```
+
+**Type** — choose one:
+- `feat` — new feature or behaviour
+- `fix` — bug fix
+- `chore` — maintenance, dependency bumps, config
+- `refactor` — code restructuring with no behaviour change
+- `ci` — CI/CD pipeline changes
+- `docs` — documentation only
+- `test` — adding or updating tests
+- `perf` — performance improvement
+
+**Scope** — the affected app or lib in lowercase, matching a name from `apps/` or `libs/` (e.g. `shell`, `social-ui`, `component-library`). Omit the scope if the change is workspace-wide or spans multiple projects.
+
+**Description** — imperative mood, lowercase first letter, no trailing period, under 72 characters total.
+
+Examples:
+- `feat(shell): add Mixpanel integration`
+- `fix(social-ui): correct date formatting in post scheduler`
+- `chore(deps): bump vite to 6.0`
+- `ci: add bundle size comparison to PR checks`
+
+### 6. Generate the PR description
+
+Use the staged diff (or branch diff if no staged changes) as the source. Do not re-run `gh pr diff` unless needed.
+
+Pick **one** of the two formats below based on whether the change is a bug fix or a feature/refactor. The PR body must contain **only** the sections shown — no additional headings.
+
+#### Bug fix
+
+```markdown
+## Problem
+
+[1–2 sentences describing the bug or undesired behaviour.]
+
+## Solution
+
+[1–2 sentences describing the fix and approach taken.]
+
+## Changes
+
+- [High-level change bullet]
+- [Another bullet if needed]
+```
+
+#### Feature / refactor
+
+```markdown
+## Overview
+
+[1–2 sentences describing what was added or changed and why.]
+
+## Changes
+
+- [High-level change bullet]
+- [Another bullet if needed]
+```
+
+#### Content rules
+
+**Include:**
+- What changed and why, in plain language
+- High-level bullets grouped by intent (e.g. "Scope social-ui CSS under data-remote" not "Modified ui.css, hacks.css, …")
+- Enough context for a reviewer to understand the PR without reading the diff first
+
+**Do not include:**
+- `## Test plan`, `## Summary`, screenshots sections, or any other headings beyond those in the template above
+- File paths or per-file change lists (unless the user explicitly asks)
+- Links (unless the user explicitly asks)
+- `#`-level headings (`##` is the top level)
+- Purely cosmetic or trivial changes
+- "Made with Cursor", "Co-authored-by: Cursor", or any Cursor/tool attribution
+- Checklists, TODOs, or testing instructions — add these only if the user explicitly requests a test plan
+
+**Writing style:**
+- Complete sentences, good grammar
+- Imperative or past tense as appropriate; be consistent within the PR
+- 2–5 bullets under `## Changes` is typical; use fewer if the change is small
+
+### 7. Open the pull request
+
+Target the repository's default branch (`dev`) unless the user specifies otherwise.
+
+```bash
+gh pr create --base dev --title "<conventional-commit-title>" --body "$(cat <<'EOF'
+<paste the generated description here exactly — no extra sections>
+EOF
+)"
+```
+
+After creating the PR, verify the live description on GitHub does not contain appended attribution (e.g. "Made with Cursor"). If it does, edit the PR to remove it:
+
+```bash
+gh pr edit <number> --body "$(cat <<'EOF'
+<corrected description>
+EOF
+)"
+```
+
+Report the PR number and link to the user.

@@ -1,5 +1,3 @@
-PATH=$PATH:~/dotfiles/local-scripts
-
 . ~/dotfiles/configs/.bash_aliases
 
 # Add Visual Studio Code (code) for MAC (https://code.visualstudio.com/docs/setup/mac)

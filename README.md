@@ -21,12 +21,27 @@ Add the following to your `~/.gitconfig` file:
 
 If you want scripts to be available in non-bash shells (e.g. powershell), then update the PATH environment variables to include the `scripts` folder.
 
-## Additional scripts
+## AI agent skills
 
-If you have local scripts you want to include, then symbolically link them to `~/dotfiles/local-scripts`.
+Agent skills live in `~/.agents/skills/`. This repo tracks two things:
 
-For windows: `mklink /D "<dotfiles_location>\local-scripts" "<folder_of_local_scripts>"`
+- `skills/` — my own skills (one folder per skill).
+- `.skill-lock.json` — manifest of installed third-party skills. Their files
+  aren't committed; this file reinstalls them.
 
-This folder is git ignored.
+### Setup
 
-You may wish to include this path in the environment PATH.
+```bash
+# link Claude and the lockfile to the skills hub
+mkdir -p ~/.agents/skills ~/.claude
+ln -sfn ~/.agents/skills            ~/.claude/skills
+ln -sfn ~/dotfiles/.skill-lock.json ~/.agents/.skill-lock.json
+
+# link my own skills into the hub
+for d in ~/dotfiles/skills/*/; do
+  ln -sfn "$d" ~/.agents/skills/"$(basename "$d")"
+done
+
+# reinstall third-party skills from the manifest
+npx skills experimental_install
+```
