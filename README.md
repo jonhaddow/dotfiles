@@ -33,13 +33,18 @@ Agent skills live in `~/.agents/skills/`. This repo tracks two things:
 
 ```bash
 # link Claude and the lockfile to the skills hub
-mkdir -p ~/.agents/skills ~/.claude
+mkdir -p ~/.agents/skills ~/.claude/agents
 ln -sfn ~/.agents/skills            ~/.claude/skills
 ln -sfn ~/dotfiles/.skill-lock.json ~/.agents/.skill-lock.json
 
 # link my own skills into the hub
 for d in ~/dotfiles/skills/*/; do
   ln -sfn "$d" ~/.agents/skills/"$(basename "$d")"
+done
+
+# link my own agents
+for f in ~/dotfiles/agents/*.md; do
+  ln -sfn "$f" ~/.claude/agents/"$(basename "$f")"
 done
 
 # reinstall third-party skills from the manifest
