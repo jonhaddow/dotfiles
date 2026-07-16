@@ -60,16 +60,6 @@
       "installedAt": "2026-07-03T06:46:33.777Z",
       "updatedAt": "2026-07-07T10:34:22.025Z"
     },
-    "code-review": {
-      "source": "mattpocock/skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/mattpocock/skills.git",
-      "skillPath": "skills/engineering/code-review/SKILL.md",
-      "skillFolderHash": "9df6fdac9c49f20944411ee45e1582e718d9a657",
-      "pluginName": "mattpocock-skills",
-      "installedAt": "2026-07-07T10:34:22.022Z",
-      "updatedAt": "2026-07-07T10:34:22.022Z"
-    },
     "improve-codebase-architecture": {
       "source": "mattpocock/skills",
       "sourceType": "github",
@@ -109,15 +99,6 @@
       "pluginName": "mattpocock-skills",
       "installedAt": "2026-07-07T10:34:22.028Z",
       "updatedAt": "2026-07-07T10:34:22.028Z"
-    },
-    "find-skills": {
-      "source": "vercel-labs/skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/vercel-labs/skills.git",
-      "skillPath": "skills/find-skills/SKILL.md",
-      "skillFolderHash": "eb6a23305aea6e340d14b9de3766e721f9f4861b",
-      "installedAt": "2026-07-07T10:34:33.820Z",
-      "updatedAt": "2026-07-07T10:34:33.820Z"
     },
     "thermo-nuclear-code-quality-review": {
       "source": "cursor/plugins",
