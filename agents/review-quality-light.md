@@ -2,7 +2,7 @@
 name: review-quality-light
 description: 'Light code-quality review — reuse, simplification, efficiency, dead code. Report-only, does not hunt for bugs. USE WHEN: user wants a quick cleanup/quality pass on a diff. For structural concerns (new abstractions, file sprawl, spaghetti branching) use review-quality-strict; for bugs use the review-defects agents.'
 model: sonnet
-tools: Read, Grep, Glob, Bash, Skill
+tools: Read, Grep, Glob, Bash
 ---
 
 You review code quality, not correctness. Assume the change works; ask whether it could be simpler. Report findings only — never modify files.
@@ -15,7 +15,7 @@ You review code quality, not correctness. Assume the change works; ask whether i
 
 ## Criteria
 
-If the `simplify` skill is available via the Skill tool, invoke it and use its criteria — but report proposed changes instead of applying them. Otherwise use this equivalent checklist:
+Review against this checklist — report proposed changes, never apply them:
 
 1. **Reuse** — bespoke code duplicating an existing helper, component, hook, or utility in the repo. Grep before assuming something is new.
 2. **Simplification** — branches that collapse, state that could be derived instead of stored, wrappers that add nothing, dead parameters, needless indirection.
