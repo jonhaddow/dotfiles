@@ -1,6 +1,7 @@
 ---
 name: raise-pr
 model: haiku
+tools: Bash, Read
 description: 'Commit any staged changes to a new branch and open a pull request with a generated title and description. USE WHEN: user wants to create a PR, user says "raise a PR", "create a PR from staged changes", "commit and raise PR", "push and open PR" (etc.)'
 ---
 
@@ -27,7 +28,7 @@ If there are no staged changes, skip steps 3–4 and raise the PR from the curre
 
 Derive a short, kebab-case branch name from the nature of the changes (e.g. `feat-add-user-avatar`, `fix-login-redirect`). Avoid generic names like `my-feature`.
 
-Generate a commit message for the staged changes. If the repo uses conventional commits (see step 5), match the title's `type(scope):` format; otherwise write a short imperative message.
+Generate a commit message for the staged changes, and decide the message style here — its subject line is reused verbatim as the PR title (step 5), so it must be correct. Use the **conventional commit** format (`<type>(<scope>): <description>`) if the repo's `AGENTS.md`, `CLAUDE.md`, `README`, or `CONTRIBUTING` mentions conventional commits, or the recent `git log` clearly follows it; otherwise write a short imperative message (capitalised, no trailing period). Keep the subject line under 72 characters.
 
 ### 3. Create the branch and commit
 
@@ -46,16 +47,9 @@ git push --set-upstream origin <branch-name>
 
 ### 5. Generate the PR title
 
-First decide the title style. Use the **conventional commit** format **only if** the repo's `AGENTS.md`, `CLAUDE.md`, `README`, or `CONTRIBUTING` mentions conventional commits (or the recent `git log` clearly follows it). Otherwise, write a **plain title**: a short imperative description, capitalised, no trailing period, under 72 characters (e.g. `Add Mixpanel integration`, `Fix date formatting in post scheduler`). Skip the rest of this section in that case.
+The PR title **is the subject line (first line) of the commit message from step 2** — use it verbatim. Do not re-decide the format or rewrite it: reusing the commit subject keeps the title and commit consistent and satisfies any PR-title lint the repo enforces (the format decision was already made in step 2).
 
-If conventional commits apply, choose the scope and type based on the repo-specific instructions.
-
-**Description** — imperative mood, lowercase first letter, no trailing period, under 72 characters total.
-
-Examples:
-
-- `fix(app-1): correct date formatting in post scheduler`
-- `ci: add bundle size comparison to PR checks`
+If there were no staged changes (no new commit was created), derive the title from the branch's existing commits: use the sole commit's subject if there is exactly one, otherwise write a single summary line in the **same style the repo's recent `git log` uses** (conventional `<type>(<scope>): <description>` if the log follows it, else a short imperative line), under 72 characters.
 
 ### 6. Generate the PR description
 
@@ -130,7 +124,7 @@ gh auth status
 If that succeeds, create the PR normally:
 
 ```bash
-gh pr create --base dev --title "<conventional-commit-title>" --body "$(cat <<'EOF'
+gh pr create --base dev --title "<commit-subject-title>" --body "$(cat <<'EOF'
 <paste the generated description here exactly — no extra sections>
 EOF
 )"
@@ -150,7 +144,7 @@ if [ -z "$token" ]; then
   exit 1
 fi
 
-GH_TOKEN="$token" gh pr create --base dev --title "<conventional-commit-title>" --body "$(cat <<'EOF'
+GH_TOKEN="$token" gh pr create --base dev --title "<commit-subject-title>" --body "$(cat <<'EOF'
 <paste the generated description here exactly — no extra sections>
 EOF
 )"
