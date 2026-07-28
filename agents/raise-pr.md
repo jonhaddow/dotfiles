@@ -1,6 +1,6 @@
 ---
 name: raise-pr
-model: haiku
+model: sonnet
 tools: Bash, Read
 description: 'Commit any staged changes to a new branch and open a pull request with a generated title and description. USE WHEN: user wants to create a PR, user says "raise a PR", "create a PR from staged changes", "commit and raise PR", "push and open PR" (etc.)'
 ---

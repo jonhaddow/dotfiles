@@ -1,3 +1,10 @@
+# Plans
+
+Personal project plans live in the Obsidian vault at
+`~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Main/Work/Plans`
+(granted via `additionalDirectories`). When asked about a plan, or when
+starting work that a plan might cover, check that directory first.
+
 # Coding instructions
 
 Front-end work is React + TypeScript: functional patterns, type-heavy design,

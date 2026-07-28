@@ -5,7 +5,7 @@ description: 'Commit any staged changes to a new branch and open a pull request 
 
 # Raise PR
 
-Delegate this to the `raise-pr` agent — it runs on a cheap, fast model and contains the full procedure (branch naming, commit, PR title/description format, gh auth fallback).
+Delegate this to the `raise-pr` agent — it contains the full procedure (branch naming, commit, PR title/description format, gh auth fallback).
 
 1. **Do no preparation work yourself.** Do not run `git diff`, `git log`, or `git status`, do not read or summarise the staged files, and do not draft the branch name, commit message, PR title, or PR description. The agent derives all of that from the staged diff itself — doing it in the main session wastes tokens and duplicates the agent's job.
 2. Spawn the agent with the Agent tool: `subagent_type: "raise-pr"`, `run_in_background: false`. Keep the prompt minimal: pass only (a) any arguments or explicit instructions the user gave, and (b) context the agent cannot recover from the diff alone — the _why_ behind the change if it is not obvious, or a non-default base branch. Do not hand it a pre-written title or description; let it write them.
