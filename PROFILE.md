@@ -1,7 +1,6 @@
 # Plans
 
-Personal project plans live in the Obsidian vault at
-`~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Main/Work/Plans`
+Personal project plans live in the Obsidian vault at `~/notes/Plans`
 (granted via `additionalDirectories`). When asked about a plan, or when
 starting work that a plan might cover, check that directory first.
 
