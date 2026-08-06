@@ -25,8 +25,8 @@ and acting on it, is the user's, in their own session.
 An Obsidian vault outside the working repo, granted via `additionalDirectories`.
 
 Plans drive the work; they do not travel with it. Never copy a plan into the
-repo, and never let one reach a commit message or PR description. The only edit
-you ever make to a plan is the status write-back in step 7.
+repo, and never let one reach a commit message or PR description. The only
+edits you ever make to a plan are the write-backs in step 7.
 
 If the user names a plan, use it. If they refer to "the plan" and only one file
 in that directory plausibly covers the current repo or task, use it and say
@@ -150,26 +150,42 @@ survives, so the user can check it out in their IDE straight away.
 
 ## 7. Write the PR back to the plan
 
-Do this as soon as the PR exists — the number will not change later.
+Do this as soon as the PR exists — the number will not change later. Two
+edits, both confined to the unit you just implemented.
 
-Look for a status or tracking table in the plan, the kind that lists units
-against their state. If there is one, update the row for the unit you just
-implemented: mark it done or in progress as appropriate, and record the PR
-number the same way the existing rows record theirs.
+**First, the status table.** Look for a status or tracking table in the plan,
+the kind that lists units against their state. If there is one, update the row
+for the unit you just implemented: mark it done or in progress as appropriate,
+and record the PR number the same way the existing rows record theirs. Prefer
+the existing convention — if done rows read `✅ #601`, write `✅ #607`. If there
+is no status table, add a simple one listing the plan's units and their state,
+so this and future PRs have somewhere to land.
 
-Rules:
+**Second, remove the unit's implementation notes.** The PR now holds the real
+implementation; the code is the source of truth. Notes left in the plan
+describe what was *intended*, not what was *built* — the agent scoping the next
+unit will read them as fact and be misled. Delete the how: approach sketches,
+proposed code, file-by-file breakdowns, step sequences, anything an implementer
+would follow. In their place leave a single line pointing at the PR, in the
+plan's own link style.
 
-- **Only the row for this unit.** Do not touch other rows, prose, or headings.
-- **Match the existing convention.** If done rows read `✅ #601`, write
-  `✅ #607`. Do not introduce a new format or a link style the table does not
-  already use.
-- **If there is no status table, do nothing.** Do not create one. A plan without
-  tracking is a plan the user reads top to bottom; adding scaffolding to it is
-  not your call.
+Keep:
+
+- The unit's heading and a one-line statement of what it covers — the plan must
+  still show its shape.
+- Anything that constrains **future** units — shared checklists, conventions,
+  hard constraints, decisions later units depend on that live nowhere else.
+  These are not this unit's notes, even when they sit next to it.
+
+Rules for both edits:
+
+- **Only this unit's content.** Do not touch other units, shared prose, or
+  headings elsewhere in the document. Creating a missing status table is the
+  one exception.
 - **Nothing else changes.** No reformatting, no fixing typos you noticed, no
   ticking checklist items elsewhere in the document.
 
-If the write fails, do not retry in a loop. Carry on and tell the user at the
+If a write fails, do not retry in a loop. Carry on and tell the user at the
 end that the plan was not updated.
 
 ## 8. Review and print the findings
@@ -194,8 +210,8 @@ Give the user:
 - One line on what was implemented
 - Anything the agent flagged as out of scope or unresolved
 - The branch name, ready to check out
-- Whether the plan's status table was updated, and say so explicitly if it was
-  not — either because the plan has no table, or because the write failed
+- Whether the plan was updated — status row and implementation notes removed —
+  and say so explicitly if either edit did not happen, and why
 
 Then you are done. The run ends here: the PR is up, the worktree is gone, and
 nothing further touches the code. CI, the findings above, and the user's own
