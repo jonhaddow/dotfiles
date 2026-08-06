@@ -18,12 +18,7 @@ Tailwind, Storybook, Testing Library, MSW.
 
 ## Communication
 
-- Plain language. Short sentences. No jargon or slang
-  (no "load-bearing", "footgun", "bikeshedding").
-- Never use the "It's not X, it's Y" construction.
-- No validation phrases ("Great question", "Good catch", "Honestly", "To be fair").
-- No hedging filler. State the answer directly.
-- Neutral, technical tone. No dramatic framing.
+- Always talk in ASD-STE100 Simplified Technical English
 
 ## Code comments
 
@@ -31,6 +26,6 @@ Tailwind, Storybook, Testing Library, MSW.
 - JSDoc only where it adds value: exported/public functions, shared utilities,
   non-obvious behaviour. Skip for internal helpers, typed-prop components,
   self-explanatory code.
-- One-line JSDoc. No @param/@returns when types cover them.
+- No @param/@returns when types cover them.
 - No decorative banners, section headers, or file-level summaries.
 - Don't narrate changes in comments ("// updated to fix bug").

@@ -24,9 +24,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/mattpocock/skills.git",
       "skillPath": "skills/engineering/tdd/SKILL.md",
-      "skillFolderHash": "0a727bd358b855cbcc1c35cfff21ef31f9ffb8de",
+      "skillFolderHash": "423f3cc2bccf3b0ed426fb35eeb4b38d9188a343",
       "installedAt": "2026-07-03T06:46:33.774Z",
-      "updatedAt": "2026-07-24T08:48:59.026Z"
+      "updatedAt": "2026-08-06T06:56:25.946Z"
     },
     "grill-me": {
       "source": "mattpocock/skills",
@@ -42,9 +42,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/mattpocock/skills.git",
       "skillPath": "skills/productivity/grilling/SKILL.md",
-      "skillFolderHash": "10b0db61f9b3869243db8a1a0ee84f862139b94e",
+      "skillFolderHash": "fd99bcbb818f7ef766b83656fb5fac0b58e223ad",
       "installedAt": "2026-07-03T06:46:33.777Z",
-      "updatedAt": "2026-07-24T08:49:01.280Z"
+      "updatedAt": "2026-08-06T06:56:26.891Z"
     },
     "handoff": {
       "source": "mattpocock/skills",
@@ -69,9 +69,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/mattpocock/skills.git",
       "skillPath": "skills/engineering/prototype/SKILL.md",
-      "skillFolderHash": "dd3d782b69ccb67493fbe76b84149399da3c9fee",
+      "skillFolderHash": "57569dda16077a016b8fb82494dbf9f6430d7cc4",
       "installedAt": "2026-07-07T10:34:22.026Z",
-      "updatedAt": "2026-07-24T08:49:04.356Z"
+      "updatedAt": "2026-08-06T06:56:27.832Z"
     },
     "research": {
       "source": "mattpocock/skills",
