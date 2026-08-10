@@ -1,117 +1,70 @@
 ---
 name: implement
-description: 'Implement one unit of work from a plan in an isolated worktree, raise the PR, tear the worktree down, and print a review. USE WHEN: user says "get a subagent to implement PR1", "implement the next PR from the plan", "implement <unit> from <plan>", or asks for a scoped piece of a plan to be built and raised as a PR.'
+description: 'Build a piece of work — a bug fix, a small feature, a rename, a cleanup — in an isolated worktree, raise the PR, tear the worktree down, and print a review. USE WHEN: user asks for a change to be implemented, says "fix this", "implement X", "build X and raise a PR", "get a subagent to make this change", or describes a scoped change they want built and raised as a PR. For a unit of work from a plan document, use the implement-plan skill instead.'
 ---
 
-# Implement a plan unit
+# Implement
 
-Take one unit of work from a plan, build it in a throwaway worktree, raise a PR,
-run a review over it, and leave the repo with no worktree behind — so the branch
-can be checked out normally in an IDE.
+Take one piece of work, build it in a throwaway worktree, raise a PR, run a
+review over it, and leave the repo with no worktree behind — so the branch can
+be checked out normally in an IDE.
 
-Your job is scoping, dispatch, and cleanup. **Do not write any of the
-implementation yourself.**
+The scope comes from the user. If it comes from a plan document instead, use
+`implement-plan`: the same flow, plus plan resolution and a write-back to the
+plan.
+
+Your job is scoping, dispatch, and cleanup. **Do not write any of the change
+yourself.**
 
 **Once the PR is up and the worktree is gone, no more code changes.** The review
 that follows is static: it prints findings and stops. Deciding what to act on,
 and acting on it, is the user's, in their own session.
 
-## Where plans live
+## 1. Write the scope brief
 
-```
-~/notes/Plans
-```
+The user's request is the specification. The agent starts cold — it cannot see
+this conversation — so write out everything it needs:
 
-An Obsidian vault outside the working repo, granted via `additionalDirectories`.
+- **What is wrong, or what should change**, in the user's own terms. For a bug:
+  the symptom, how to reproduce it, and the correct behaviour.
+- **Anything already established in this session** — a diagnosis, a stack trace,
+  a file or function the user pointed at, a decision on how to fix it.
+- **The boundary.** What is explicitly out of scope. Small changes drift.
+- **Whether tests are expected**, if the repo's convention does not settle it.
 
-Plans drive the work; they do not travel with it. Never copy a plan into the
-repo, and never let one reach a commit message or PR description. The only
-edits you ever make to a plan are the write-backs in step 7.
+Do not go reading the codebase to write the brief. The agent has search tools
+and does that work; you only pass on what you already know.
 
-If the user names a plan, use it. If they refer to "the plan" and only one file
-in that directory plausibly covers the current repo or task, use it and say
-which. If several could, ask.
+Pick the **base branch**: the default branch, from the remote. Use something
+else only if the user names it, or if the work depends on an open branch — say
+which and why.
 
-## 1. Resolve the scope
+If the request is really several PRs, or needs design decisions the user has not
+made, say so now. Suggest a plan and `implement-plan` instead of splitting it
+yourself.
 
-Plans are written for humans and have no fixed structure. A unit might be a
-table row, a named section, a checklist item, or a bullet. "PR1" is what the
-user calls it, not necessarily what the document calls it.
+## 2. Confirm — briefly
 
-Read the plan and work out:
+If anything is ambiguous — which of two behaviours is correct, how wide the
+change should go, which branch to base on — ask, and wait. One wrong reading
+costs a whole run.
 
-- **Which unit** the user means.
-- **What else in the document applies to it** — shared checklists, hard
-  constraints, conventions, per-area notes, reference PRs. These usually live
-  far from the unit itself and are the part an agent will otherwise miss.
-- **What base branch it should build on.** Units frequently depend on earlier
-  ones. If a dependency is merged, base on the default branch. If it is still
-  open, base on that branch and say so. You hold this context; the agent does
-  not.
+If nothing is ambiguous, state the scope and base branch in a line or two and
+carry on. Do not stop for approval on a change the user has already described
+clearly.
 
-Produce a **scope brief**: the unit plus every section that constrains it,
-written out. Not a file path — the agent will not read the plan.
+## 3. Create the worktree
 
-## 2. Confirm before dispatching
-
-State in a few lines:
-
-- The unit you resolved, and what it covers
-- The base branch and why
-- Anything in the plan that looked ambiguous
-
-Wait for the user. This is the cheap checkpoint — a wrong reading here costs a
-whole implementation run.
-
-## 3. Preflight
-
-Check the worktree directory will not pollute the repo:
-
-```bash
-git check-ignore -q .claude/worktrees && echo ignored || echo NOT-ignored
-```
-
-If not ignored, add it to `.git/info/exclude` before going further. Otherwise
-the worktree shows up as untracked in the main checkout and can be swept into a
-`git add -A`.
-
-Then look for orphans from earlier runs:
-
-```bash
-git worktree list
-```
-
-Anything under `.claude/worktrees/` that this run did not create is left over.
-Mention it but do not remove it without asking. It may be someone's parked work.
-
-## 4. Create the worktree
+Read `~/.claude/skills/worktree/SKILL.md` and follow parts 1 and 2 — preflight
+and create. That file is the single source of truth for the worktree lifecycle.
 
 You create it, so you can always clean it up — even if the agent never reports
-back. Derive a short kebab-case branch name from the scope
-(`refactor-drop-standalone-header`), following whatever naming the plan or the
-repo's recent branches use.
+back. Base it on the branch you picked in step 1, and name it after the change
+(`fix-empty-cart-total`).
 
-```bash
-repo_root="$(git rev-parse --show-toplevel)"
-git -C "$repo_root" fetch origin
-git -C "$repo_root" worktree add ".claude/worktrees/<branch>" -b "<branch>" "<base>"
-```
+If creation fails, stop there. Do not dispatch the agent.
 
-Use the remote ref for `<base>` (`origin/dev`, or the open branch this stacks
-on). A stale local branch silently branches from the wrong commit.
-
-**Record the absolute worktree path now**, before dispatching. It is what makes
-cleanup possible if the agent dies mid-run.
-
-Then copy across anything git ignores that the worktree still needs. If the repo
-root has a `.worktreeinclude`, copy each path it lists. Otherwise check for
-`.env` and `.env.local` and copy them if present. `git worktree add` copies no
-ignored files, so without this the worktree has no local environment.
-
-If creation fails — the branch already exists, the base is unknown, the repo is
-mid-rebase — stop here and say so. Do not dispatch the agent.
-
-## 5. Dispatch the implementer
+## 4. Dispatch the implementer
 
 Spawn the `implement-pr` agent with the Agent tool, `run_in_background: false`.
 Pass it:
@@ -120,101 +73,49 @@ Pass it:
 - The **absolute worktree path** — it enters that, it does not create one
 - The **base branch**, so the PR targets the right place
 
-Do not pass a plan file path. Do not pre-write the commit message, PR title, or
-PR description — the PR procedure owns those.
+Do not pre-write the commit message, PR title, or PR description — the PR
+procedure owns those.
 
 It returns a PR number and URL, and notes.
 
 **If it reports a failure**, stop. No review. Relay what blocked it, and give
 the user the worktree path so they can look at the work — you have it from
-step 4 regardless of what the agent returned. Leave the worktree in place.
+step 3 regardless of what the agent returned. Leave the worktree in place.
 
-## 6. Remove the worktree
+## 5. Remove the worktree
 
 As soon as the PR is raised. Nothing later in this flow needs it — the review
 reads from GitHub, and no code changes after this point.
 
-```bash
-git -C <worktree-path> status --porcelain   # must be empty
-git -C <worktree-path> log --oneline @{u}.. # must be empty — everything pushed
-git worktree remove --force <worktree-path>
-```
+Follow part 4 of `~/.claude/skills/worktree/SKILL.md`: both emptiness checks,
+then `git worktree remove --force`. If either check is non-empty, stop and tell
+the user rather than forcing it.
 
-Check both before removing. `--force` is needed because the worktree holds an
-ignored `node_modules`, but it will also discard real work — the two checks
-above are what makes it safe. If either is non-empty, stop and tell the user
-rather than forcing it.
-
-This deletes `node_modules` with it, which is the point. The local branch
-survives, so the user can check it out in their IDE straight away.
-
-## 7. Write the PR back to the plan
-
-Do this as soon as the PR exists — the number will not change later. Two
-edits, both confined to the unit you just implemented.
-
-**First, the status table.** Look for a status or tracking table in the plan,
-the kind that lists units against their state. If there is one, update the row
-for the unit you just implemented: mark it done or in progress as appropriate,
-and record the PR number the same way the existing rows record theirs. Prefer
-the existing convention — if done rows read `✅ #601`, write `✅ #607`. If there
-is no status table, add a simple one listing the plan's units and their state,
-so this and future PRs have somewhere to land.
-
-**Second, remove the unit's implementation notes.** The PR now holds the real
-implementation; the code is the source of truth. Notes left in the plan
-describe what was *intended*, not what was *built* — the agent scoping the next
-unit will read them as fact and be misled. Delete the how: approach sketches,
-proposed code, file-by-file breakdowns, step sequences, anything an implementer
-would follow. In their place leave a single line pointing at the PR, in the
-plan's own link style.
-
-Keep:
-
-- The unit's heading and a one-line statement of what it covers — the plan must
-  still show its shape.
-- Anything that constrains **future** units — shared checklists, conventions,
-  hard constraints, decisions later units depend on that live nowhere else.
-  These are not this unit's notes, even when they sit next to it.
-
-Rules for both edits:
-
-- **Only this unit's content.** Do not touch other units, shared prose, or
-  headings elsewhere in the document. Creating a missing status table is the
-  one exception.
-- **Nothing else changes.** No reformatting, no fixing typos you noticed, no
-  ticking checklist items elsewhere in the document.
-
-If a write fails, do not retry in a loop. Carry on and tell the user at the
-end that the plan was not updated.
-
-## 8. Review and print the findings
+## 6. Review and print the findings
 
 Invoke the `pr-review` skill with the PR number. It reads the diff from GitHub,
-so it needs no working tree.
+so it needs no working tree, and it picks its own level per axis — a one-line
+fix gets a light pass on its own.
 
 Show the merged review here, in chat. **Do not post it to the PR.** Present
-every finding — defects, quality, design — as a numbered list, most serious
-first, each one a line or two: what is wrong, where, and the suggested fix. If
-the review is clean, say so.
+every finding as a numbered list, most serious first, each one a line or two:
+what is wrong, where, and the suggested fix. If the review is clean, say so.
 
 Then stop. **Do not fix anything.** The user reviews the PR themselves and
 decides what is worth acting on; review agents produce plausible-but-wrong
 findings and cannot see the reasoning behind the change.
 
-## 9. Report
+## 7. Report
 
 Give the user:
 
 - PR number and link
-- One line on what was implemented
+- One line on what changed
 - Anything the agent flagged as out of scope or unresolved
 - The branch name, ready to check out
-- Whether the plan was updated — status row and implementation notes removed —
-  and say so explicitly if either edit did not happen, and why
 
 Then you are done. The run ends here: the PR is up, the worktree is gone, and
 nothing further touches the code. CI, the findings above, and the user's own
 review are all theirs to act on, in a separate session.
 
-Do not restate the plan or recap the process.
+Do not recap the process.

@@ -1,7 +1,7 @@
 ---
 name: implement-pr
 tools: Bash, Read, Edit, Write, Glob, Grep, EnterWorktree
-description: "Implement one unit of work in an isolated git worktree and raise the PR for it. USE WHEN: the implement skill dispatches a scoped piece of work. Not for direct user invocation — it expects a scope brief and a base branch from the orchestrator."
+description: "Implement one unit of work in an isolated git worktree and raise the PR for it. USE WHEN: the implement or implement-plan skill dispatches a scoped piece of work. Not for direct user invocation — it expects a scope brief and a base branch from the orchestrator."
 ---
 
 # Implement in a worktree, then raise the PR
@@ -27,36 +27,24 @@ Your prompt contains:
 Anything outside the scope brief is out of scope. If you notice an unrelated
 problem, report it at the end — do not fix it.
 
-## 1. Enter the worktree
+## 1. Enter the worktree and install
 
-`EnterWorktree` with the `path` you were given.
+`EnterWorktree` with the `path` you were given, then follow part 3 of
+`~/.claude/skills/worktree/SKILL.md` — working inside the worktree, and
+installing dependencies from the lockfile.
 
-**From this point every edit happens inside the worktree.** Never edit the main
-checkout. If a path you are about to write to does not start with the worktree
-path, stop.
+The short version, which that file expands on: every edit happens inside the
+worktree and never in the main checkout; the branch is already created and
+checked out, so do not create another and do not rename it; install frozen
+before running anything. If the lockfile moved and your brief did not change
+dependencies, put it back: `git checkout -- <lockfile>`.
 
-The branch is already created and checked out. Do not create another and do not
-rename it.
-
-## 2. Install dependencies
-
-The worktree has no `node_modules`. Install before running anything.
-
-Detect the package manager from the lockfile and use its frozen variant —
-`bun install --frozen-lockfile`, `npm ci`, and so on. That keeps a spurious
-lockfile diff out of your PR.
-
-If the scope brief genuinely changes dependencies, install frozen first, then
-make the change and re-install unfrozen so the lockfile updates on purpose.
-Otherwise, if the lockfile moved anyway, put it back:
-`git checkout -- <lockfile>`.
-
-## 3. Implement
+## 2. Implement
 
 Follow the scope brief. Match the surrounding code — its naming, its idiom, its
 comment density.
 
-## 4. Check your work — lightly
+## 3. Check your work — lightly
 
 CI is the real gate. You are only catching what would waste a CI cycle.
 
@@ -73,7 +61,7 @@ If something fails and you cannot fix it within the scope brief, **stop** — go
 to the failure path below. Do not raise a PR with known-broken code and a note
 about it.
 
-## 5. Raise the PR
+## 4. Raise the PR
 
 Check `git status --short` first — nothing unexpected should be there, no stray
 build output, editor files, or copied environment files. Leave everything
@@ -91,7 +79,7 @@ Two things it will pick up on its own, but confirm:
 The PR description must read as if a person wrote the change. No mention of the
 plan, the worktree, the agent, or this procedure.
 
-## 6. Report back
+## 5. Report back
 
 Your reply is machine-consumed by the orchestrator. Return, in this order:
 

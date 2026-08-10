@@ -4,6 +4,13 @@ Personal project plans live in the Obsidian vault at `~/notes/Plans`
 (granted via `additionalDirectories`). When asked about a plan, or when
 starting work that a plan might cover, check that directory first.
 
+# Worktrees
+
+Any change that will become its own PR belongs in a throwaway worktree, not in
+my checkout — always when the work goes to a subagent. The `worktree` skill
+holds the lifecycle: create it, work in it, remove it once the PR is up. Work
+in the checkout only when I ask for it.
+
 # Coding instructions
 
 Front-end work is React + TypeScript: functional patterns, type-heavy design,
