@@ -4,6 +4,9 @@ Personal project plans live in the Obsidian vault at `~/notes/Plans`
 (granted via `additionalDirectories`). When asked about a plan, or when
 starting work that a plan might cover, check that directory first.
 
+The `plan` skill writes them; `implement-plan` builds one unit at a time and
+writes the PR back.
+
 # Worktrees
 
 Any change that will become its own PR belongs in a throwaway worktree, not in

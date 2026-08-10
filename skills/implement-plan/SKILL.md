@@ -116,7 +116,9 @@ for the unit you just implemented: mark it done or in progress as appropriate,
 and record the PR number the same way the existing rows record theirs. Prefer
 the existing convention — if done rows read `✅ #601`, write `✅ #607`. If there
 is no status table, add a simple one listing the plan's units and their state,
-so this and future PRs have somewhere to land.
+so this and future PRs have somewhere to land. The `plan` skill writes these
+tables as `Not started` → `🔍 [#658](url)` open → `✅ [#657](url)` merged; use
+that only when the plan sets no convention of its own.
 
 **Second, remove the unit's implementation notes.** The PR now holds the real
 implementation; the code is the source of truth. Notes left in the plan
