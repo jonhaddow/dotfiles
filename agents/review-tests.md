@@ -135,17 +135,20 @@ Mock the edges of the system, never its inside.
 - Leaks: timers, subscriptions, servers, or listeners never torn down.
 - Committed `.only`, `.skip`, `xit`, or commented-out tests.
 
-### 7. Gaps worth naming
+### 7. Gaps inside the suites this PR touches
 
-Only where tests already exist in this diff and the gap is cheap to close:
+The defect reviewers own the question "does this change need tests at all". You
+own the gaps inside the suites in front of you, and only where closing them is
+cheap:
 
-- Changed behaviour in the diff with no test at all, in a flow that matters.
 - A new UI flow tested only on the happy path, with no empty, loading, or error
   state.
-- New server logic with no boundary or invalid-input case.
+- New server logic tested for the valid case with no boundary or invalid input.
+- A suite that covers one branch of a new conditional and not the other.
 
-Do not ask for coverage of everything. Name at most the few gaps you would
-block a merge over.
+Do not ask for coverage of everything, and do not list a gap in code this PR did
+not test at all — that belongs to the defect reviewers. Name at most the few you
+would block a merge over.
 
 ## What to skip
 

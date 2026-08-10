@@ -22,7 +22,7 @@ Collect: total lines changed (excluding lockfiles and generated code), files tou
 
 **Tests axis:**
 - `review-tests` if the diff adds or changes any test file — spec, unit, integration, e2e, or the shared test setup.
-- Skip this axis otherwise. Do not run it to ask for missing tests; it reviews the tests that are there.
+- Skip this axis otherwise. It reviews the tests that are there; the defect agents own whether a change needed a test in the first place, on every diff.
 
 **Quality axis:**
 - `review-quality-strict` if the change adds new modules, components, or abstractions; grows any file substantially (or past 1000 lines); or adds branching to existing shared code.
@@ -44,6 +44,6 @@ Tell the user which level was chosen for each axis and why (one line per axis, i
 The merged report is the **only** full rendering of the review — the user never sees the agents' replies directly, so render every finding here exactly once and add nothing around it.
 
 - Defect findings first ranked by severity, then test findings, then quality findings ranked by payoff, then design findings with accessibility first. Attribute nothing to "the agents" — present it as one review.
-- Where the axes overlap (typically type hygiene, accessibility issues that are also bugs, or a test the quality reviewer also called out), keep one copy of the finding — the one from the axis that owns it.
+- Where the axes overlap (typically type hygiene, accessibility issues that are also bugs, or a test the quality reviewer also called out), keep one copy of the finding — the one from the axis that owns it. On tests specifically: a missing test is the defect axis's; the quality of an existing test is the test axis's.
 - Final verdict is the strictest of the agents' verdicts. State it with the single most important reason.
 - Stop after the verdict. No overall summary paragraph, no recap of the process, no restatement of what the PR does.
