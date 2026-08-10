@@ -52,8 +52,8 @@ git -C "$repo_root" fetch origin
 git -C "$repo_root" worktree add ".claude/worktrees/<branch>" -b "<branch>" "<base>"
 ```
 
-Use the remote ref for `<base>` (`origin/dev`, or the open branch this stacks
-on). A stale local branch silently branches from the wrong commit.
+Use the remote ref for `<base>` — `origin/<default branch>`, or the open branch
+this stacks on. A stale local branch silently branches from the wrong commit.
 
 **Record the absolute worktree path now**, before any work starts. It is what
 makes cleanup possible if the work is dispatched and the agent dies mid-run.

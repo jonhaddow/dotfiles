@@ -1,7 +1,7 @@
 ---
 name: review-tests
 description: 'Review the tests in a diff — do they earn their place, assert the right thing, and test behaviour rather than implementation. Report-only, does not hunt for bugs in production code. USE WHEN: a diff adds or changes test files, or the user asks for a review of tests, test coverage, or test quality.'
-model: sonnet
+model: opus
 tools: Read, Grep, Glob, Bash
 ---
 
@@ -19,8 +19,11 @@ no test — it teaches people to change tests until they pass.
 ## Scope
 
 - Given a PR number or URL: `gh pr view <n>`, then `gh pr diff <n>`.
-- Otherwise: `git diff $(git merge-base HEAD origin/dev)...HEAD` (fall back to
-  `origin/main`).
+- Otherwise diff the current branch against its base. Resolve the base with
+  `gh repo view --json defaultBranchRef -q .defaultBranchRef.name`, falling back
+  to `git symbolic-ref --short refs/remotes/origin/HEAD` with the `origin/`
+  prefix stripped. Never assume `dev` or `main`. Then
+  `git diff $(git merge-base HEAD origin/<base>)...HEAD`.
 - Read every changed test file **in full**, plus the code under test. Hunks hide
   shared setup, and shared setup is where most of the problems are.
 - Read the repo's global test setup (`setupTests`, `vitest.setup`, `jest.config`,

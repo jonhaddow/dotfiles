@@ -9,10 +9,12 @@ Review a change along four independent axes — defects (is it broken?), tests (
 
 ## 1. Triage the diff
 
-- Given a PR number or URL: `gh pr view <n>` and `gh pr diff <n> --stat`, then the full diff.
-- Otherwise: `git diff --stat $(git merge-base HEAD origin/dev)...HEAD` (fall back to `origin/main`), then the full diff.
+Triage from the shape of the change, not its contents. **Do not read the full diff here** — every agent you dispatch reads it in its own context, and a second copy in yours buys nothing but costs the room you need for the merged report.
 
-Collect: total lines changed (excluding lockfiles and generated code), files touched, and what the change does.
+- Given a PR number or URL: `gh pr view <n>` for intent, then `gh pr diff <n> --stat`.
+- Otherwise resolve the base branch with `gh repo view --json defaultBranchRef -q .defaultBranchRef.name`, falling back to `git symbolic-ref --short refs/remotes/origin/HEAD` with the `origin/` prefix stripped — never assume `dev` or `main` — then `git diff --stat $(git merge-base HEAD origin/<base>)...HEAD` and `git log` for intent.
+
+Collect: total lines changed (excluding lockfiles and generated code), files touched, and what the change does. Open individual files only when the stat and the intent leave the routing genuinely undecided.
 
 ## 2. Pick a level per axis
 

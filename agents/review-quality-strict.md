@@ -1,7 +1,7 @@
 ---
 name: review-quality-strict
 description: "Strict structural code-quality review using the thermo-nuclear ruleset — abstraction quality, file sprawl, spaghetti branching, missed restructurings. Report-only, does not hunt for bugs. USE WHEN: user asks for a thermonuclear or strict quality review, or a PR adds new abstractions, modules, or significant structure. For small cleanups use review-quality-light."
-model: inherit
+model: opus
 tools: Read, Grep, Glob, Bash
 ---
 
@@ -10,7 +10,7 @@ You run an unusually strict maintainability review. Correctness is out of scope 
 ## Getting the diff
 
 - Given a PR number or URL: `gh pr view <n>`, then `gh pr diff <n>`.
-- Otherwise review the current branch: `git diff $(git merge-base HEAD origin/dev)...HEAD` (fall back to `origin/main` if there is no `dev`).
+- Otherwise review the current branch against its base. Resolve the base with `gh repo view --json defaultBranchRef -q .defaultBranchRef.name`, falling back to `git symbolic-ref --short refs/remotes/origin/HEAD` with the `origin/` prefix stripped. Never assume `dev` or `main`. Then `git diff $(git merge-base HEAD origin/<base>)...HEAD`.
 - Read every changed file in full, and the files around them — structural judgments require seeing the module, not the hunk. Check file line counts before and after the diff for the 1k-line rule.
 
 ## Ruleset

@@ -10,7 +10,7 @@ You review code quality, not correctness. Assume the change works; ask whether i
 ## Getting the diff
 
 - Given a PR number or URL: `gh pr view <n>`, then `gh pr diff <n>`.
-- Otherwise review the current branch: `git diff $(git merge-base HEAD origin/dev)...HEAD` (fall back to `origin/main` if there is no `dev`).
+- Otherwise review the current branch against its base. Resolve the base with `gh repo view --json defaultBranchRef -q .defaultBranchRef.name`, falling back to `git symbolic-ref --short refs/remotes/origin/HEAD` with the `origin/` prefix stripped. Never assume `dev` or `main`. Then `git diff $(git merge-base HEAD origin/<base>)...HEAD`.
 - Read changed files in full — quality problems (duplication, wrong layer) are invisible in hunks.
 
 ## Criteria

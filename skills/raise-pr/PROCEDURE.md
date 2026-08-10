@@ -177,7 +177,8 @@ no additional headings.
 - Checklists, Verification section, TODOs, or testing instructions — add these only if the user
   explicitly requests a test plan
 - Any mention of the plan the work came from, the worktree, or the agent
-  workflow that produced the change. You may refers to previously merged PRs if relevant.
+  workflow that produced the change. You may refer to previously merged PRs if
+  relevant.
 
 **Writing style:**
 

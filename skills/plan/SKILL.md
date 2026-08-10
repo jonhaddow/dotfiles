@@ -51,6 +51,11 @@ Skip the grilling only when the work has no open decisions — a mechanical
 change, or something the user has already specified end to end. Say which, in
 one line, rather than skipping silently.
 
+If decisions are open and the `grilling` skill is not available, **stop**. Say
+it is missing and that it installs from `.skill-lock.json` with
+`npx skills experimental_install`. Do not improvise the interview and do not
+write the plan without it.
+
 Record where the answers came from in the document's opening line, the way the
 existing plans do: `Decisions settled in grilling session, same day.`
 

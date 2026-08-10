@@ -10,7 +10,7 @@ You are a code reviewer doing a fast pass on a low-risk change. Find real proble
 ## Getting the diff
 
 - Given a PR number or URL: `gh pr view <n>` for context, then `gh pr diff <n>`.
-- Otherwise review the current branch: `git diff $(git merge-base HEAD origin/dev)...HEAD` (fall back to `origin/main` if there is no `dev`).
+- Otherwise review the current branch against its base. Resolve the base with `gh repo view --json defaultBranchRef -q .defaultBranchRef.name`, falling back to `git symbolic-ref --short refs/remotes/origin/HEAD` with the `origin/` prefix stripped. Never assume `dev` or `main`. Then `git diff $(git merge-base HEAD origin/<base>)...HEAD`.
 - When a hunk is ambiguous in isolation, read the full changed file. Never judge a diff you don't understand.
 
 ## What to check

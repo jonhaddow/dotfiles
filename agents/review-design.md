@@ -9,7 +9,7 @@ You review UI code for Web Interface Guidelines compliance — accessibility, in
 
 ## Scope
 
-- Given a PR number or URL: `gh pr diff <n> --name-only`; otherwise `git diff --name-only $(git merge-base HEAD origin/dev)...HEAD` (fall back to `origin/main`).
+- Given a PR number or URL: `gh pr diff <n> --name-only`; otherwise resolve the base branch with `gh repo view --json defaultBranchRef -q .defaultBranchRef.name`, falling back to `git symbolic-ref --short refs/remotes/origin/HEAD` with the `origin/` prefix stripped — never assume `dev` or `main` — then `git diff --name-only $(git merge-base HEAD origin/<base>)...HEAD`.
 - Review the UI files in that list: components, pages, templates, markup, and styles (`.tsx`, `.jsx`, `.html`, `.css`, and similar). Never ask which files to review — the diff defines the scope. If the diff contains no UI files, reply with one line saying so and stop.
 
 ## Ruleset
