@@ -90,8 +90,8 @@ Your reply is machine-consumed by the orchestrator. Return, in this order:
    resolved one way, anything you noticed but left alone
 
 Do not remove the worktree and do not run `ExitWorktree`. The orchestrator
-removes it as soon as you report the PR. Your job ends there — review findings
-and CI failures are handled later, in the main working directory, not by you.
+owns its removal. Your job ends when you report the PR — review findings and
+CI failures are handled after that, not by you.
 
 ## Failure path
 

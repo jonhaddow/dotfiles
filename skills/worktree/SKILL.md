@@ -83,8 +83,10 @@ the change and re-install unfrozen so the lockfile updates on purpose.
 
 ## 4. Remove
 
-As soon as the PR is raised. Nothing after that point needs the worktree — a
-review reads the diff from GitHub, and no code changes once the PR is up.
+As soon as nothing left in the run will touch the code. Standalone, that is
+right after the PR is raised; in the implement flows it is after the
+post-review fix pass has pushed. A review itself never needs the worktree — it
+reads the diff from GitHub.
 
 ```bash
 git -C <worktree-path> status --porcelain   # must be empty

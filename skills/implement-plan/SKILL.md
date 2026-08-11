@@ -1,6 +1,6 @@
 ---
 name: implement-plan
-description: 'Implement one unit of work from a plan in an isolated worktree, raise the PR, tear the worktree down, print a review, and write the PR back to the plan. USE WHEN: user says "get a subagent to implement PR1", "implement the next PR from the plan", "implement <unit> from <plan>", or asks for a scoped piece of a plan to be built and raised as a PR. For work the user describes themselves, with no plan behind it, use the implement skill instead.'
+description: 'Implement one unit of work from a plan in an isolated worktree, raise the PR, review it, apply the mechanical findings, print the judgement ones, and write the PR back to the plan. USE WHEN: user says "get a subagent to implement PR1", "implement the next PR from the plan", "implement <unit> from <plan>", or asks for a scoped piece of a plan to be built and raised as a PR. For work the user describes themselves, with no plan behind it, use the implement skill instead.'
 ---
 
 # Implement a plan unit
@@ -12,9 +12,11 @@ can be checked out normally in an IDE.
 Your job is scoping, dispatch, and cleanup. **Do not write any of the
 implementation yourself.**
 
-**Once the PR is up and the worktree is gone, no more code changes.** The review
-that follows is static: it prints findings and stops. Deciding what to act on,
-and acting on it, is the user's, in their own session.
+The review that follows splits its findings by disposition. **Mechanical**
+findings — concrete, local, verified against the code — are applied by a fix
+agent and pushed to the PR. **Judgement** findings are printed and left alone:
+deciding on those is the user's, in their own session. Once the fix pass has
+pushed and the worktree is gone, no more code changes.
 
 ## Where plans live
 
@@ -26,7 +28,7 @@ An Obsidian vault outside the working repo, granted via `additionalDirectories`.
 
 Plans drive the work; they do not travel with it. Never copy a plan into the
 repo, and never let one reach a commit message or PR description. The only
-edits you ever make to a plan are the write-backs in step 6.
+edits you ever make to a plan are the write-backs in step 5.
 
 If the user names a plan, use it. If they refer to "the plan" and only one file
 in that directory plausibly covers the current repo or task, use it and say
@@ -34,7 +36,7 @@ which. If several could, ask.
 
 If no plan covers the work — the user described it themselves — you are in the
 wrong skill. Use `implement` instead. It is the same flow without the plan
-resolution here and the write-backs in step 6.
+resolution here and the write-backs in step 5.
 
 ## 1. Resolve the scope
 
@@ -96,19 +98,11 @@ It returns a PR number and URL, and notes.
 the user the worktree path so they can look at the work — you have it from
 step 3 regardless of what the agent returned. Leave the worktree in place.
 
-## 5. Remove the worktree
+## 5. Write the PR back to the plan
 
-As soon as the PR is raised. Nothing later in this flow needs it — the review
-reads from GitHub, and no code changes after this point.
-
-Follow part 4 of `~/.claude/skills/worktree/SKILL.md`: both emptiness checks,
-then `git worktree remove --force`. If either check is non-empty, stop and tell
-the user rather than forcing it.
-
-## 6. Write the PR back to the plan
-
-Do this as soon as the PR exists — the number will not change later. Two
-edits, both confined to the unit you just implemented.
+Do this as soon as the PR exists — the number will not change later, and the
+review's fix pass only adds commits to it. Two edits, both confined to the
+unit you just implemented.
 
 **First, the status table.** Look for a status or tracking table in the plan,
 the kind that lists units against their state. If there is one, update the row
@@ -147,33 +141,73 @@ Rules for both edits:
 If a write fails, do not retry in a loop. Carry on and tell the user at the
 end that the plan was not updated.
 
-## 7. Review and print the findings
+## 6. Review and split the findings
 
 Invoke the `pr-review` skill with the PR number. It reads the diff from GitHub,
-so it needs no working tree.
+picks its own level per axis, and tags every finding **mechanical** or
+**judgement**.
 
-Show the merged review here, in chat. **Do not post it to the PR.** Present
-every finding — defects, quality, design — as a numbered list, most serious
-first, each one a line or two: what is wrong, where, and the suggested fix. If
-the review is clean, say so.
+Hold the merged report: do not render it here, and **do not post it to the
+PR.** Its single rendering is the report in step 9, split by disposition, after
+the fix pass has settled which findings survived.
 
-Then stop. **Do not fix anything.** The user reviews the PR themselves and
-decides what is worth acting on; review agents produce plausible-but-wrong
-findings and cannot see the reasoning behind the change.
+Keep the worktree in place — the fix pass needs it.
 
-## 8. Report
+## 7. Fix the mechanical findings
+
+If nothing is tagged mechanical, go to step 8.
+
+Otherwise spawn the `apply-review-fixes` agent with the Agent tool,
+`run_in_background: false`. Pass it:
+
+- The **mechanical findings**, in full — `file:line`, the defect, the
+  suggested fix
+- The **absolute worktree path**
+- The **PR number and branch**
+
+It verifies each finding against the code before touching it, fixes the ones
+that hold, runs scoped checks, and pushes to the PR branch. Anything it skips —
+refuted, out of scope, broke a check — comes back with a reason; treat those as
+judgement findings from here on.
+
+Fix nothing yourself, and dispatch nothing for judgement findings — those are
+the user's call.
+
+If it reports a failure, relay what blocked it, carry its findings into the
+report unfixed, and go to step 8 — the emptiness checks there decide whether
+the worktree can come down.
+
+## 8. Remove the worktree
+
+Nothing later in this flow needs it — no code changes after the fix pass.
+
+Follow part 4 of `~/.claude/skills/worktree/SKILL.md`: both emptiness checks,
+then `git worktree remove --force`. If either check is non-empty, stop and tell
+the user rather than forcing it.
+
+## 9. Report
 
 Give the user:
 
 - PR number and link
 - One line on what was implemented
+- **Fixed and pushed** — the findings the fix pass applied, one line each
+- **For your judgement** — every remaining finding, numbered, most serious
+  first, each one a line or two: what is wrong, where, and the suggested fix.
+  For the fix pass's skips, add why they were not applied.
+- The review verdict
 - Anything the agent flagged as out of scope or unresolved
 - The branch name, ready to check out
 - Whether the plan was updated — status row and implementation notes removed —
   and say so explicitly if either edit did not happen, and why
 
-Then you are done. The run ends here: the PR is up, the worktree is gone, and
-nothing further touches the code. CI, the findings above, and the user's own
-review are all theirs to act on, in a separate session.
+If the review found nothing, say so. Render every finding exactly once, here —
+the user never sees the agents' replies directly.
+
+Then you are done. **Fix nothing further.** The judgement findings are the
+user's: review agents produce plausible-but-wrong findings and cannot see the
+reasoning behind the change, which is exactly why nothing non-mechanical is
+applied for them. The run ends here: the PR is up, the worktree is gone, and
+CI and the user's own review are theirs to act on, in a separate session.
 
 Do not restate the plan or recap the process.

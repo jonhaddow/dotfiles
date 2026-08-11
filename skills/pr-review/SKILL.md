@@ -1,6 +1,6 @@
 ---
 name: pr-review
-description: 'Full review of the current branch or a PR: triages the diff, picks the right review agent per axis (defects: quick/deep, tests: on/skip, quality: light/strict, design: on/skip), runs them in parallel, and merges the results. USE WHEN: user says "review this PR", "review my branch", "review this before I raise a PR", or wants a review without choosing agents manually.'
+description: 'Full review of the current branch or a PR: triages the diff, picks the right review agent per axis (defects: quick/deep, tests: on/skip, quality: light/strict, design: on/skip), runs them in parallel, and merges the results with a disposition — mechanical or judgement — on every finding. USE WHEN: user says "review this PR", "review my branch", "review this before I raise a PR", or wants a review without choosing agents manually.'
 ---
 
 # PR Review Router
@@ -46,6 +46,7 @@ Tell the user which level was chosen for each axis and why (one line per axis, i
 The merged report is the **only** full rendering of the review — the user never sees the agents' replies directly, so render every finding here exactly once and add nothing around it.
 
 - Defect findings first ranked by severity, then test findings, then quality findings ranked by payoff, then design findings with accessibility first. Attribute nothing to "the agents" — present it as one review.
+- Tag every finding with a disposition at the end of its line: **mechanical** or **judgement**. Mechanical means the finding names a concrete defect and a local fix a competent author would apply without discussion — no change of approach, public surface, or scope. Typical: a verified logic slip with an obvious correction, leftovers, type hygiene, a missing accessibility attribute, a test asserting the wrong thing, a missing test with a named behaviour and level. Judgement is everything else: structure and abstraction suggestions, trade-offs, performance hunches, scope questions, anything the author could reasonably decline. When in doubt, judgement — a wrongly-mechanical finding gets applied without a human looking; a wrongly-judgement one only costs the user a decision.
 - Where the axes overlap (typically type hygiene, accessibility issues that are also bugs, or a test the quality reviewer also called out), keep one copy of the finding — the one from the axis that owns it. On tests specifically: a missing test is the defect axis's; the quality of an existing test is the test axis's.
 - Final verdict is the strictest of the agents' verdicts. State it with the single most important reason.
 - Stop after the verdict. No overall summary paragraph, no recap of the process, no restatement of what the PR does.
