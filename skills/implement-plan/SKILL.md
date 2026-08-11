@@ -93,8 +93,10 @@ and record the PR number the same way the existing rows record theirs. Prefer
 the existing convention — if done rows read `✅ #601`, write `✅ #607`. If there
 is no status table, add a simple one listing the plan's units and their state,
 so this and future PRs have somewhere to land. The `plan` skill writes these
-tables as `Not started` → `🔍 [#658](url)` open → `✅ [#657](url)` merged; use
-that only when the plan sets no convention of its own.
+tables as `Not started` → `🔍 [#658](https://github.com/org/repo/pull/658)` open
+→ `✅ [#657](https://github.com/org/repo/pull/657)` merged, with the real PR URL
+in the link, not a placeholder; use that only when the plan sets no convention
+of its own.
 
 **Second, remove the unit's implementation notes.** The PR now holds the real
 implementation; the code is the source of truth. Notes left in the plan

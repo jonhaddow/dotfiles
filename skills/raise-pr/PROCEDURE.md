@@ -78,11 +78,15 @@ The body contains **only** these `##`-level sections:
 - `## Changes` — 2–5 high-level bullets grouped by intent ("Scope social-ui
   CSS under data-remote", not a per-file list), enough for a reviewer to
   understand the PR before opening the diff.
+- `## Screenshots` — only when the change alters what a user sees, and only
+  from images you actually captured by running the app. Before and after,
+  labelled, when the change modifies existing UI rather than adding new. If
+  the change is visual and you have no images, omit the section and say in
+  your report that it needs them — never describe an image you did not take.
 
-Do not add: test plans, summaries, screenshots, checklists, links or file
-paths (unless the user asks), attribution of any kind, or any mention of a
-plan, worktree, or agent workflow behind the change. Complete sentences,
-consistent tense.
+Do not add: test plans, summaries, checklists, links or file paths (unless the
+user asks), attribution of any kind, or any mention of a plan, worktree, or
+agent workflow behind the change. Complete sentences, consistent tense.
 
 ## 5. Open and report
 

@@ -133,8 +133,11 @@ Status values, and the legend the write-back follows:
 | Value | Meaning |
 | --- | --- |
 | `Not started` | No branch yet |
-| `🔍 [#658](url)` | PR open, in review |
-| `✅ [#657](url)` | Merged |
+| `🔍 [#658](https://github.com/org/repo/pull/658)` | PR open, in review |
+| `✅ [#657](https://github.com/org/repo/pull/657)` | Merged |
+
+The link is the real PR URL, not a placeholder — the table must be clickable straight
+from Obsidian.
 
 Two rules that matter more than they look:
 
