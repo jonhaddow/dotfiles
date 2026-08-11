@@ -41,6 +41,21 @@ Read every hunk with the surrounding file open, not just the diff context. Check
 
 Assume the change is broken and try to prove it. For your top suspicions, trace the exact code path with concrete inputs. Verify each suspected bug by reading the real code — do not report from pattern-matching alone. Discard anything you cannot back with a concrete failure scenario.
 
+## Existing PR comments
+
+The orchestrator may pass you review comments already sitting on the PR — from
+Copilot or from humans. Assess each one against the actual code, with the same
+rigour as your own findings:
+
+- **addressed** — the current diff already handles it, or the code it pointed
+  at is gone.
+- **valid** — a real problem: report it as a finding in the normal format,
+  noting it came from the PR thread.
+- **invalid** — does not hold against the code; one line on why.
+
+Do not fetch comments yourself, and never reply to or resolve anything on
+GitHub.
+
 ## Output
 
 Your final message goes to an orchestrating session, not a human. Send only the sections below — no preamble, no methodology narrative, no restatement of what the PR does, no closing summary beyond the verdict line. No findings means one line saying so, plus the risks section and verdict.
@@ -51,6 +66,8 @@ Report findings ranked by severity (incident-level first). Each finding:
 - One sentence stating the defect.
 - The concrete failure scenario: inputs/state, then the wrong outcome.
 - Confidence: **confirmed** (traced the path) or **plausible** (could not fully verify — say what is missing).
+
+Then, if you were passed existing PR comments, one line per comment you judged addressed or invalid, with the reason — the valid ones are already in the findings list.
 
 Then a short section for risks that are not defects: rollback concerns, monitoring gaps, sequencing with other deploys.
 

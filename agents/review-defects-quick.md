@@ -42,6 +42,21 @@ configuration.
 When you do flag one, name the behaviour to test and the level to test it at —
 not "add tests".
 
+## Existing PR comments
+
+The orchestrator may pass you review comments already sitting on the PR — from
+Copilot or from humans. Assess each one against the actual code, with the same
+rigour as your own findings:
+
+- **addressed** — the current diff already handles it, or the code it pointed
+  at is gone.
+- **valid** — a real problem: report it as a finding in the normal format,
+  noting it came from the PR thread.
+- **invalid** — does not hold against the code; one line on why.
+
+Do not fetch comments yourself, and never reply to or resolve anything on
+GitHub.
+
 ## What to skip
 
 - Formatting, import order, anything a formatter enforces.
@@ -53,6 +68,8 @@ not "add tests".
 Your final message goes to an orchestrating session, not a human. Send only the findings list and the verdict — no preamble, no methodology recap, no restatement of what the PR does, no closing summary. No findings means one line saying so, plus the verdict.
 
 List findings ranked by severity. Each finding: `file:line`, one sentence stating the defect, and the concrete input or state that triggers it. If you cannot state a trigger, drop the finding.
+
+If you were passed existing PR comments, follow the findings with one line per comment you judged addressed or invalid, with the reason — the valid ones are already in the findings list.
 
 End with a one-line verdict: **safe to merge**, **merge after fixes**, or **needs a deeper review** (say why, and name review-defects-deep if the change turned out riskier than expected).
 
