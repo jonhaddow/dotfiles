@@ -27,8 +27,13 @@ Don't read the codebase for this — the agent has search tools.
 Base branch: the remote default, unless the user names another or the work
 stacks on an open branch.
 
-Ambiguous → ask now. Several PRs' worth → suggest `plan` + `implement-plan`.
-Otherwise state scope and base in a line and go.
+Then question the shape, while it's still free: does the brief hold more
+than one reason to change — unrelated concerns, a risky part bundled with a
+safe one, a refactor that enables the feature? If a seam is obvious, say so
+and let the user pick one unit or ask for a plan. If the brief is too vague
+to tell, don't guess — step 4 asks again against the real diff.
+
+Ambiguous → ask now. Otherwise state scope and base in a line and go.
 
 ## 2. Worktree
 
@@ -45,7 +50,10 @@ Failure → stop, no review. Relay it, leave the worktree, give the path.
 
 ## 4. Review + CI
 
-- Invoke `pr-review` with the PR number.
+- Invoke `pr-review` with the PR number. Its shape gate runs first: a
+  `split` verdict stops the review there — skip to step 7, hold the draft,
+  and run no fix pass. Bug findings against a diff you're about to
+  rearrange are worse than none.
 - While it runs: `gh pr checks <n>`. No checks → CI skips drafts; note it,
   move on. Take what's terminal when the review returns — don't hold the
   draft for a slow suite; the watch covers it.
@@ -67,7 +75,9 @@ wait for the fresh CI — the watch covers it.
 
 ## 7. Report
 
-- PR link, one line on the change
+- PR link, one line on the change, and whether it's open or held draft
+- **Should this be split?** — only if the review says so: the seam, and that
+  it's still draft pending your call
 - **Fixed and pushed** — one line each
 - **For your judgement** — numbered, most serious first; skips say why
 - Verdict, implementer flags, branch name
@@ -78,3 +88,5 @@ Each finding renders once, here. Fix nothing further. No process recap.
 
 `pr-watch` skill: reviews and fresh CI land on the opened PR, same
 mechanical/judgement split. It ends on its own — after that, the run is over.
+
+Held draft → no watch. Nothing is coming until the user opens it.

@@ -1,12 +1,13 @@
 ---
 name: pr-review
-description: 'Full review of the current branch or a PR: triages the diff, picks the right review agent per axis (defects: quick/deep, tests: on/skip, quality: light/strict, design: on/skip), runs them in parallel, and merges the results with a disposition — mechanical or judgement — on every finding. USE WHEN: user says "review this PR", "review my branch", "review this before I raise a PR", or wants a review without choosing agents manually.'
+description: 'Full review of the current branch or a PR: triages the diff, checks first whether it should be split, then picks the right review agent per axis (defects: quick/deep, tests: on/skip, quality: light/strict, design: on/skip), runs them in parallel, and merges the results with a disposition — mechanical or judgement — on every finding. USE WHEN: user says "review this PR", "review my branch", "review this before I raise a PR", or wants a review without choosing agents manually.'
 ---
 
 # PR Review Router
 
-Four axes — defects, tests, quality, design — each delegated to an agent.
-You triage, dispatch, merge. Don't review the code yourself.
+A shape gate, then four axes — defects, tests, quality, design — each
+delegated to an agent. You triage, dispatch, merge. Don't review the code
+yourself.
 
 ## 1. Triage
 
@@ -28,6 +29,8 @@ Open individual files only if routing is genuinely undecided.
 
 ## 2. Pick a level per axis
 
+- **Scope**: `review-scope` unless the diff is small and obviously one
+  concern. Cheap, and the finding is worthless once the PR is open.
 - **Defects**: `deep` for auth, payments, persistence/migrations,
   concurrency, public API, feature flags, many call sites, or ~400+
   non-test lines. Else `quick`.
@@ -41,14 +44,24 @@ Open individual files only if routing is genuinely undecided.
 Borderline → escalate: a wasted deep review costs minutes, a missed one an
 incident.
 
-## 3. Dispatch
+## 3. Shape gate
+
+`review-scope` first, **alone**. It's a fast check, and its answer decides
+whether the rest is worth running.
+
+- Verdict `split` → report the seam and **stop**. Don't dispatch the others:
+  their findings would be against a diff that's about to be rearranged, and
+  a long bug list on a doomed PR is noise the user has to re-read later.
+- Verdict `ship as one`, or the axis was skipped → carry on.
+
+## 4. Dispatch the rest
 
 One line per axis on the choice, including skips. Spawn the agents **in
 parallel**: PR ref + one-line intent, replies machine-consumed (findings and
 verdict only). Existing comments go to the defects agent only, to assess
 each as addressed / valid / invalid.
 
-## 4. Merge and report
+## 5. Merge and report
 
 The only full rendering — each finding exactly once, presented as one
 review.
