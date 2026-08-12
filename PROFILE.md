@@ -1,8 +1,12 @@
 # Plans
 
-Personal project plans live in the Obsidian vault at `~/notes/Plans`
+Personal project plans live in the Obsidian vault at
+`~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Main/Claude/Plans`
 (granted via `additionalDirectories`). When asked about a plan, or when
 starting work that a plan might cover, check that directory first.
+
+In that vault, write only inside `Claude/`. All other folders are
+read-only — permission rules enforce this.
 
 The `plan` skill writes them; `implement-plan` builds one unit at a time and
 writes the PR back.
