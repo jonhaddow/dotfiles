@@ -5,24 +5,17 @@ description: 'Watch a PR for a bounded window: wake when review comments or CI r
 
 # Watch a PR — bounded
 
-Copilot's review and CI both land a few minutes after a PR goes up. Arm a
-background watch so those arrivals wake the session, then leave it alone.
-Never sit in a foreground polling loop.
+Reviews and CI land minutes after a PR opens or a push. Arm a background
+watch that wakes the session — never poll in the foreground.
 
-## 1. Arm the monitor
+## 1. Arm
 
-Use the Monitor tool: `persistent: false`, `timeout_ms: 900000`. The script
-polls with `gh` every 30 seconds and:
+Monitor tool: `persistent: false`, `timeout_ms: 900000`. The script polls
+`gh` every 30s, emits a line per new comment / review / finished check, and
+exits when nothing is left to wait for, or at ~14 min. The Monitor timeout
+is only the backstop.
 
-- emits one line per new inline review comment and per new review
-- emits one line per check run reaching a terminal state
-- exits on its own when there is nothing left to wait for — every check
-  terminal and no reviewer still requested — or at its own ~14-minute
-  deadline, whichever is first. The Monitor timeout is only the backstop; the
-  script's exit is the normal end, so an untouched PR stops the polling by
-  itself.
-
-Reference script — fill `repo` and `pr`, adapt as needed:
+Reference script — fill `repo` and `pr`:
 
 ```bash
 repo=<owner/repo>; pr=<n>; end=$((SECONDS + 840)); nc=0; nr=0; prev=""
@@ -49,33 +42,24 @@ done
 echo "watch over"
 ```
 
-The 120-second floor stops an instant all-green from closing the watch before
-Copilot has even been requested. A repo with no checks at all never satisfies
-the early exit and simply runs to the deadline — still bounded.
+The 120s floor keeps an instant all-green from closing the watch before
+reviewers register. A repo with no checks runs to the deadline — still
+bounded.
 
-## 2. Handle events as they arrive
+## 2. On events
 
-- **New comments** — refetch their full bodies with `gh`, then dispatch the
-  defects agent to judge each one addressed, valid, or invalid, passing the
-  comments and PR number. Use the level a review already picked this session;
-  with no prior review, route by pr-review's rule (deep for risky changes,
-  quick otherwise). Tag the valid ones mechanical or judgement by pr-review's
-  disposition rule. If any are mechanical: `git fetch origin`, re-create a
-  worktree on the existing branch — `git worktree add
-  .claude/worktrees/<branch> <branch>`, fast-forwarded to `origin/<branch>`;
-  if it will not fast-forward, stop and tell the user — dispatch
-  `apply-review-fixes`, then remove the worktree per part 4 of the worktree
-  skill. Report the whole assessment in chat: fixed and pushed, for the
-  user's judgement, addressed, invalid.
-- **A failed check** — surface it: the check name and a line or two from
-  `gh run view --log-failed`. Do not fix it; say what you would look at
-  first.
-- **The watch ends** — one line. If nothing arrived, say the watch closed
-  quietly.
+- **Comments** → refetch full bodies. Defects agent judges each addressed /
+  valid / invalid — pass it the PR number and the findings the user already
+  saw, so nothing repeats. Valid → mechanical or judgement (pr-review's
+  rule). Mechanical → reacquire the branch (worktree part 5),
+  `apply-review-fixes`, remove (part 4). Report: fixed, judgement,
+  addressed, invalid.
+- **Red check** → PR owns it (lint, typecheck, its tests) → mechanical, one
+  fix attempt through the same path. Flake / infra / unrelated → surface the
+  name + a line from `gh run view --log-failed`.
+- **End** → one line. Nothing arrived → say it closed quietly.
 
-## 3. One round only
+## 3. One round
 
-A fix push starts fresh CI and may draw a new Copilot review; do not re-arm
-the watch for those, and never restart a watch that has ended. Every path
-through this skill terminates. Whatever lands after the watch closes is the
-user's, in a separate session.
+A fix push restarts CI — don't re-arm for it, never restart an ended watch.
+Whatever lands later is the user's, in a new session.

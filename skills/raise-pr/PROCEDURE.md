@@ -2,91 +2,71 @@
 
 Single source of truth for the PR format, followed by the `raise-pr` and
 `implement-pr` agents. Follow it exactly — no extra sections, checklists, or
-attribution, even if other rules in context suggest a PR template. It assumes
-nothing about where it runs: repo root or worktree, default branch or a branch
-that already exists.
+attribution, even if other rules in context suggest a PR template.
 
 ## Subject line format
 
-One rule for both the commit subject (step 2) and the PR title (step 3). Work
-it out once for the repo.
+One rule for the commit subject and the PR title. Work it out once:
 
-Use conventional commits — `<type>(<scope>): <description>` — if the repo's
-docs (`AGENTS.md`, `CLAUDE.md`, `README`, `CONTRIBUTING`) mention them or the
-recent `git log` clearly follows them. Take the scope from the repo's own
-list — commitlint config, `CONTRIBUTING`, scopes recurring in the log — and
-omit it rather than invent one. Otherwise: a short imperative line,
-capitalised, no trailing period. Under 72 characters either way.
-
-Never assume an existing commit subject already follows this — check any
-subject you did not write yourself before reusing it.
+- Conventional commits (`<type>(<scope>): <description>`) if the repo's docs
+  or recent `git log` clearly use them. Scope from the repo's own list;
+  omit rather than invent.
+- Otherwise: short imperative line, capitalised, no trailing period.
+- Under 72 characters either way.
+- Never assume an existing subject already complies — check before reusing.
 
 ## 1. Base branch and changes
 
-Base branch, in this order — never assume `main` or `dev`:
+Base branch, in order — never assume `main` or `dev`:
 
-1. An explicit base in your instructions — always wins.
+1. An explicit base in your instructions
 2. `gh repo view --json defaultBranchRef -q .defaultBranchRef.name`
-3. `git symbolic-ref --short refs/remotes/origin/HEAD`, `origin/` stripped.
+3. `git symbolic-ref --short refs/remotes/origin/HEAD`, `origin/` stripped
 
-Then `git status --short`, and take the first case that applies:
+Then `git status --short`, first case that applies:
 
-- **Staged changes** — commit those and only those; mention anything left
-  unstaged when you report.
-- **Only unstaged changes** — `git add -A` (includes untracked) and commit it
-  all.
-- **Clean, with commits ahead of `<base>`** — nothing to commit; skip step 2's
-  commit.
-- **Clean, nothing ahead** — nothing to raise. Say so and stop.
+- **Staged changes** → commit those only; report anything left unstaged
+- **Only unstaged** → `git add -A`, commit it all
+- **Clean, commits ahead of base** → skip step 2's commit
+- **Clean, nothing ahead** → nothing to raise; say so and stop
 
-Read the diff of what you settled on (`git diff --cached` once staged) — the
-commit message and PR description come from it.
+Read the diff (`git diff --cached`) — the message and description come from
+it.
 
 ## 2. Branch, commit, push
 
-If you are on `<base>`, create a branch: a short kebab-case name derived from
-the changes (`fix-login-redirect`), nothing generic. Already on another
-branch: keep it — do not rename it or create a second one.
-
-Commit with a subject in the format above — it becomes the PR title, so get
-it right here. Add a body only if the *why* is not obvious from the subject
-and diff. No attribution unless the user explicitly asks.
-
-Push with `git push --set-upstream origin <branch>` (plain `git push` if the
-upstream already exists).
+- On `<base>` → create a branch: short kebab-case from the changes
+  (`fix-login-redirect`). On any other branch → keep it.
+- Commit with a subject in the format above — it becomes the PR title. Body
+  only if the *why* isn't obvious. No attribution.
+- `git push --set-upstream origin <branch>` (plain `git push` if upstream
+  exists).
 
 ## 3. PR title
 
-Always the subject line format.
+Always the subject format:
 
-- You committed in step 2: reuse that subject verbatim.
-- No commit, branch has one commit whose subject fits the format: use it
-  verbatim.
-- One commit that does not fit: write a fresh title to the format; leave the
-  commit alone.
-- Several commits: one title summarising the branch as a whole.
+- You committed → reuse that subject verbatim
+- One existing commit that fits → use it verbatim
+- One that doesn't fit → write a fresh title; leave the commit alone
+- Several commits → one title for the branch as a whole
 
 ## 4. PR description
 
-Source: the diff you committed, or `git diff origin/<base>...HEAD` — three
-dots — if you committed nothing.
+Source: the committed diff, or `git diff origin/<base>...HEAD` (three dots).
 
-The body contains **only** these `##`-level sections:
+Only these `##` sections:
 
-- `## Problem` then `## Solution`, 1–2 sentences each, for a bug fix — or
-  `## Overview`, 1–2 sentences, for anything else.
-- `## Changes` — 2–5 high-level bullets grouped by intent ("Scope social-ui
-  CSS under data-remote", not a per-file list), enough for a reviewer to
-  understand the PR before opening the diff.
-- `## Screenshots` — only when the change alters what a user sees, and only
-  from images you actually captured by running the app. Before and after,
-  labelled, when the change modifies existing UI rather than adding new. If
-  the change is visual and you have no images, omit the section and say in
-  your report that it needs them — never describe an image you did not take.
+- `## Problem` + `## Solution` (bug fix) or `## Overview` (anything else) —
+  1–2 sentences each
+- `## Changes` — 2–5 bullets grouped by intent, not per-file
+- `## Screenshots` — only for visible UI changes, only from images you
+  actually captured (before/after when modifying existing UI). No images →
+  omit the section and flag it in your report; never describe an image you
+  didn't take.
 
-Do not add: test plans, summaries, checklists, links or file paths (unless the
-user asks), attribution of any kind, or any mention of a plan, worktree, or
-agent workflow behind the change. Complete sentences, consistent tense.
+No test plans, checklists, links, file paths, attribution, or any mention of
+a plan, worktree, or agent. Complete sentences, consistent tense.
 
 ## 5. Open and report
 
@@ -97,9 +77,16 @@ EOF
 )"
 ```
 
-If this fails because `gh` is not authenticated, stop and ask the user to run
-`gh auth login` — do not work around it. Then check the live description for
-appended tool or agent attribution; if present, remove it with
-`gh pr edit <number> --body`.
+- `--draft` only when your instructions say so — a user asking for a PR
+  wants it open.
+- `gh` not authenticated → stop and ask for `gh auth login`.
+- Check the live description for appended tool attribution; remove with
+  `gh pr edit <number> --body`.
+- Report the PR number and link.
 
-Report the PR number and link.
+## 6. Refresh an existing PR
+
+After later pushes: re-read `git diff origin/<base>...HEAD` and fix only
+what the new commits made wrong — usually a `## Changes` bullet; the title
+only if the PR now does something different. Leave true text alone. Apply
+with `gh pr edit <number> --title/--body`.

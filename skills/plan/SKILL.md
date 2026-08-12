@@ -5,7 +5,7 @@ description: 'Turn a feature or piece of work into a planning document in the Ob
 
 # Write a plan
 
-Produce one document in `~/notes/Plans` that another session can implement from,
+Produce one document in `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Main/Claude/Plans` that another session can implement from,
 one PR at a time, without you in the room.
 
 The document is read later by an orchestrator with no memory of this
@@ -15,7 +15,7 @@ be a guess dressed as a fact.
 ## 1. Check what already exists
 
 ```bash
-ls ~/notes/Plans
+ls ~/"Library/Mobile Documents/iCloud~md~obsidian/Documents/Main/Claude/Plans"
 ```
 
 If a plan already covers this work, open it and extend it. Do not write a second
@@ -93,7 +93,7 @@ why. That is a finding, not a failure.
 
 ## 5. Write the document
 
-`~/notes/Plans/<Title Case Name>.md`. Match the house structure:
+`~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Main/Claude/Plans/<Title Case Name>.md`. Match the house structure:
 
 ```markdown
 # <Title>
