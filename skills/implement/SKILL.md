@@ -50,7 +50,7 @@ Failure → stop, no review. Relay it, leave the worktree, give the path.
 
 ## 4. Review + CI
 
-- Invoke `pr-review` with the PR number. Its shape gate runs first: a
+- Invoke `pr-review` with the PR number. Its scope check runs first: a
   `split` verdict stops the review there — skip to step 7, hold the draft,
   and run no fix pass. Bug findings against a diff you're about to
   rearrange are worse than none.

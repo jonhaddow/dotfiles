@@ -5,7 +5,7 @@ description: 'Full review of the current branch or a PR: triages the diff, check
 
 # PR Review Router
 
-A shape gate, then four axes — defects, tests, quality, design — each
+A scope check, then four axes — defects, tests, quality, design — each
 delegated to an agent. You triage, dispatch, merge. Don't review the code
 yourself.
 
@@ -44,7 +44,7 @@ Open individual files only if routing is genuinely undecided.
 Borderline → escalate: a wasted deep review costs minutes, a missed one an
 incident.
 
-## 3. Shape gate
+## 3. Scope check
 
 `review-scope` first, **alone**. It's a fast check, and its answer decides
 whether the rest is worth running.
