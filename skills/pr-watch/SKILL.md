@@ -53,7 +53,7 @@ bounded.
   saw, so nothing repeats. Valid → mechanical or judgement (pr-review's
   rule). Mechanical → reacquire the branch (worktree part 5),
   `apply-review-fixes`, remove (part 4). Report: fixed, judgement,
-  addressed, invalid.
+  addressed, invalid — judgement in pr-review's short form, four lines each.
 - **Red check** → PR owns it (lint, typecheck, its tests) → mechanical, one
   fix attempt through the same path. Flake / infra / unrelated → surface the
   name + a line from `gh run view --log-failed`.

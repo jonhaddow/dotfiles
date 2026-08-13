@@ -12,9 +12,10 @@ lifecycle — you only work inside it.
 
 ## Given
 
-- **Findings** — `file:line`, defect, suggested fix; or a failing CI check
-  (name + log excerpt). Your whole scope — unrelated problems get reported,
-  not fixed.
+- **Findings** — a path to a review file (work its `## Mechanical` section
+  only, ignore `## Judgement`), or an inline list. Each is `file:line`,
+  defect, suggested fix; or a failing CI check (name + log excerpt). Your
+  whole scope — unrelated problems get reported, not fixed.
 - **Worktree path** — PR branch checked out. Never create or remove one.
 - **PR number and branch** — add commits to it; never open another PR.
 

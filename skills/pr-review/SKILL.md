@@ -61,10 +61,9 @@ parallel**: PR ref + one-line intent, replies machine-consumed (findings and
 verdict only). Existing comments go to the defects agent only, to assess
 each as addressed / valid / invalid.
 
-## 5. Merge and report
+## 5. Merge
 
-The only full rendering — each finding exactly once, presented as one
-review.
+Each finding exactly once, as one review.
 
 - Order: defects by severity, tests, quality by payoff, design with a11y
   first
@@ -78,5 +77,41 @@ review.
   of an existing test → tests.
 - Valid comments become findings (deduped, tagged). Addressed / invalid:
   one line each at the end. Never post to GitHub.
-- Verdict: the strictest agent's, with the single most important reason.
-  Stop there — no summary, no recap.
+
+## 6. Write the review file
+
+`<session scratchpad>/review-<pr number, or branch name>.md`, sections
+`## Mechanical` and `## Judgement`. Every finding in full — `file:line`, the
+argument, the evidence, the fix.
+
+This file is the only copy of the detail. A fix agent works from it, a later
+session reads it, and the short form below is safe only because it exists.
+Write it before you print.
+
+## 7. Print
+
+The short form, and nothing else. Never the file's contents.
+
+Judgement findings, most serious first:
+
+```
+2. src/auth/session.ts:88
+   Risk:  Session survives logout in a second tab.
+   Call:  Fix now / ship and log it / leave to the reviewer.
+   Lean:  Fix now — one line, and it fails silently.
+```
+
+Four lines each, hard cap. `Risk` is what breaks for a person using the
+software, not the mechanism. `Call` is the decision open to the reader.
+`Lean` is your recommendation. A reader with no memory of the diff can act
+on all three — that's the test. They can open the file for the argument.
+
+Mechanical findings: one line each, `file:line — what`. The caller fixes
+them; nobody is deciding anything.
+
+Then the verdict — the strictest agent's, with the single most important
+reason — and the review file path, last. No summary, no recap.
+
+Invoked by another skill → that skill's report is the one the user reads.
+Write the file, hold the short form for it, print nothing here. Two
+renderings of one review is the thing this step exists to stop.

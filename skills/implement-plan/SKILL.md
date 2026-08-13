@@ -56,7 +56,7 @@ Differences:
 - **Branch name** (its step 2): name it after the unit
 - **Write-back** (after its step 3): as soon as the draft PR exists, do
   step 4 below — the number won't change
-- **Ticket** (after its step 3, and again after its step 6): step 5 below
+- **Ticket** (after its step 3): step 5 below
 - **Report** (its step 7): add one line each — plan updated or not, ticket
   moved or not, and why not
 
@@ -87,13 +87,10 @@ skip in silence. The `jira` skill owns the commands; its preflight still
 applies, and a missing or unauthenticated `acli` skips the ticket, said
 once, rather than stopping the run.
 
-Three moments:
+Two moments:
 
 - **Draft PR raised** — comment the PR URL, and move the ticket to the
   site's in-progress status.
-- **PR opened to humans** (implement's step 6) — move it to the review
-  status. Draft held for a split verdict → leave it where it is; nobody is
-  reviewing it.
 - **PR merged** — `plan-housekeeping` saw it, in this run's step 1 or a
   later one — move it to the project's done status. Merged is the only
   trigger; a closed PR is not done.
@@ -103,7 +100,7 @@ nothing to do. Never move a ticket backwards.
 
 ```bash
 acli jira workitem view ABC-124 --fields status --json
-acli jira workitem transition --key ABC-124 --status "Review" --yes
+acli jira workitem transition --key ABC-124 --status "<the site's own name>" --yes
 ```
 
 Status names vary by site, and `acli` cannot list a workflow's transitions —

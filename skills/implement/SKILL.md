@@ -58,13 +58,16 @@ Failure → stop, no review. Relay it, leave the worktree, give the path.
   move on. Take what's terminal when the review returns — don't hold the
   draft for a slow suite; the watch covers it.
 - Red checks the PR owns (lint, typecheck, its tests) → mechanical.
-  Flake / infra / unrelated → judgement.
+  Flake / infra / unrelated → judgement. Append them to the review file
+  under the same two sections, with the check name and the log excerpt —
+  one file holds everything step 5 and step 7 draw from.
 - Hold the report until step 7. Never post it to the PR.
 
 ## 5. Fix
 
-Mechanical findings → `apply-review-fixes` agent, foreground: the findings
-in full, the worktree path, the PR number and branch. It verifies, fixes,
+Mechanical findings → `apply-review-fixes` agent, foreground: the review
+file path — its `## Mechanical` section is the agent's whole scope — plus
+the worktree path, the PR number and branch. Don't restate the findings. It verifies, fixes,
 pushes, and refreshes the PR text. Skips become judgement findings.
 Failure → carry its findings into the report unfixed.
 
@@ -79,10 +82,16 @@ wait for the fresh CI — the watch covers it.
 - **Should this be split?** — only if the review says so: the seam, and that
   it's still draft pending your call
 - **Fixed and pushed** — one line each
-- **For your judgement** — numbered, most serious first; skips say why
+- **For your judgement** — numbered, most serious first, in the review's
+  short form (`file:line` / Risk / Call / Lean). A skipped mechanical fix
+  carries the skip reason as its `Risk` line.
 - Verdict, implementer flags, branch name
+- The review file path, last
 
-Each finding renders once, here. Fix nothing further. No process recap.
+The user never saw the diff — an agent wrote it. So the short form is the
+whole report: no mechanism, no reasoning chain, no quoting from the review
+file. Four lines a finding, and the file holds the rest. Fix nothing
+further. No process recap.
 
 ## 8. Watch
 
