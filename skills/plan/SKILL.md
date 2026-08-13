@@ -22,6 +22,20 @@ If a plan already covers this work, open it and extend it. Do not write a second
 document on the same subject. If a related plan exists — a dependency, a
 prerequisite, a plan this one supersedes — note it now; it will be linked.
 
+## 1b. Ask for the Jira ticket
+
+Ask, in one line, whether there is a Jira ticket this work sits under. A key or
+a URL both work; "no ticket" is a fine answer — carry on without one.
+
+Given one, read it before planning — it often carries the ask, the constraints,
+and its own children:
+
+```bash
+acli jira workitem view ABC-123 --fields summary,issuetype,status,description
+```
+
+No `acli` on the machine → stop and say so, per the `jira` skill's preflight.
+
 ## 2. Ground it in the codebase
 
 Finding facts is your job, never the user's. Before asking anything, dispatch a
@@ -102,10 +116,10 @@ Planned <D Mon YYYY>. <Where the decisions came from.>
 
 <One or two lines: what this does, in plain terms.>
 
-| Unit | Status |
-| --- | --- |
-| PR1 — <one-line name> | Not started |
-| PR2 — <one-line name> | Not started |
+| Unit | Ticket | Status |
+| --- | --- | --- |
+| PR1 — <one-line name> | ABC-124 | Not started |
+| PR2 — <one-line name> | ABC-125 | Not started |
 
 ## Current state
 
@@ -139,6 +153,10 @@ Status values, and the legend the write-back follows:
 The link is the real PR URL, not a placeholder — the table must be clickable straight
 from Obsidian.
 
+Drop the **Ticket** column when there is no Jira ticket. With one, leave the
+cells blank until step 6 fills in the keys. The plan may point at Jira; Jira
+never points back at the plan.
+
 Two rules that matter more than they look:
 
 - **Anything constraining more than one unit goes in Constraints and
@@ -150,13 +168,28 @@ Two rules that matter more than they look:
 
 Link related plans in Obsidian style: `[[MF Share Version Skew]]`.
 
-## 6. Report
+## 6. Raise the tickets
+
+Only when there is a parent ticket **and** more than one unit — a single unit is
+the parent ticket, and needs no child.
+
+Invoke the `jira` skill and give it one child per unit: summary from the unit's
+one-line name, description from what the unit covers and its dependency. It owns
+the wording, the create, and the confirmation before writing.
+
+The units are the source; the plan document is not. Nothing on a ticket may name
+the document, the vault, or "the plan" — a ticket has to read on its own.
+
+Write the returned keys into the status table, then continue.
+
+## 7. Report
 
 Show the user:
 
 - The path written
 - The unit list, one line each, with the dependency graph in a sentence — what
   is parallel, what stacks
+- The tickets raised, if any, with their URLs
 - Anything you deliberately left out of scope
 - What PR1 is, and that `implement-plan` builds it
 
