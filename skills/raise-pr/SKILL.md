@@ -22,7 +22,8 @@ the `raise-pr` agent so the diff never enters this context:
 - **No preparation.** No `git diff`/`log`/`status`, no drafted branch name,
   title, or description — the agent derives all of it.
 - Spawn `raise-pr`, foreground. Prompt: only the user's own instructions,
-  plus anything unrecoverable from the diff (non-default base, the why).
+  plus anything unrecoverable from the diff (non-default base, the why, the
+  Jira key).
 - Relay the PR number and link.
 
 Agent tool unavailable → do it yourself. Agent can't read PROCEDURE.md →

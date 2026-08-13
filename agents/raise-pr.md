@@ -23,6 +23,6 @@ not read the file.
 If the file cannot be read and no inline copy was given, stop and say so. Do not
 improvise a PR format.
 
-Anything the caller told you — an explicit base branch, a reason for the change
-that the diff does not show, or an instruction to skip a step — overrides the
-defaults in the procedure.
+Anything the caller told you — an explicit base branch, a Jira ticket key, a
+reason for the change that the diff does not show, or an instruction to skip a
+step — overrides the defaults in the procedure.

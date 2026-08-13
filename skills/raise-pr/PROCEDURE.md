@@ -12,12 +12,10 @@ One rule for the commit subject and the PR title. Work it out once:
   or recent `git log` clearly use them. Scope from the repo's own list;
   omit rather than invent.
 - Otherwise: short imperative line, capitalised, no trailing period.
-- Under 72 characters either way.
-- Never assume an existing subject already complies — check before reusing.
 
 ## 1. Base branch and changes
 
-Base branch, in order — never assume `main` or `dev`:
+Determine a base branch, in order:
 
 1. An explicit base in your instructions
 2. `gh repo view --json defaultBranchRef -q .defaultBranchRef.name`
@@ -36,9 +34,11 @@ it.
 ## 2. Branch, commit, push
 
 - On `<base>` → create a branch: short kebab-case from the changes
-  (`fix-login-redirect`). On any other branch → keep it.
+  (`fix-login-redirect`), prefixed with the Jira key if you were given one
+  (`DEV-123-fix-login-redirect`). On any other branch → keep it, whatever it
+  is named.
 - Commit with a subject in the format above — it becomes the PR title. Body
-  only if the *why* isn't obvious. No attribution.
+  only if the _why_ isn't obvious. No attribution.
 - `git push --set-upstream origin <branch>` (plain `git push` if upstream
   exists).
 
@@ -55,6 +55,12 @@ Always the subject format:
 
 Source: the committed diff, or `git diff origin/<base>...HEAD` (three dots).
 
+Given a Jira ticket key in your instructions, the first line is `# DEV-123` —
+the key alone, nothing after it, then a blank line before the first `##`
+section. No key given → no such line. Never read a key off the branch name,
+even when one is there: work stacked on another ticket's branch belongs to a
+different ticket.
+
 Only these `##` sections:
 
 - `## Problem` + `## Solution` (bug fix) or `## Overview` (anything else) —
@@ -66,7 +72,7 @@ Only these `##` sections:
   didn't take.
 
 No test plans, checklists, links, file paths, attribution, or any mention of
-a plan, worktree, or agent. Complete sentences, consistent tense.
+a plan, worktree, or agent — the ticket line above is the only exception. Complete sentences, consistent tense.
 
 ## 5. Open and report
 

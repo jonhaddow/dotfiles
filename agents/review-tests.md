@@ -46,6 +46,11 @@ Work through all seven. Not every heading yields a finding.
 - Delete tests of the framework or the language: that a prop renders, that a
   type-checked field exists, that a library function a third party already tests
   works.
+- Delete tests of code that never ships: harnesses, fixtures, test utilities,
+  build scripts, generators, local tooling. A harness proves itself when the
+  suite it wraps runs; a suite that tests the harness is a second thing to
+  maintain and gives no user-facing guarantee. Testing the tests is the clearest
+  case — flag it whatever it is named.
 - Regression tests need a reason. A bug unlikely to recur does not earn a
   permanent test unless the flow is important enough to justify the maintenance.
   Say which of the two applies.
@@ -62,6 +67,12 @@ Work through all seven. Not every heading yields a finding.
 - Tautologies: asserting a mock was called with the value just passed to it,
   asserting a constant equals itself, re-implementing the logic under test in
   the expectation.
+- Logic inside the test: `if`, ternaries, loops that build expectations,
+  computed or derived expected values, a helper that decides what to assert.
+  Tests stay dumb — literal inputs, literal expected values, one straight line
+  per case. Accept the longer, repetitive version: a test with branches has no
+  test of its own, so a wrong branch passes silently. Table-driven cases are
+  fine while the table holds only literals and the body stays branchless.
 - Assertions that do not match the test name. The name is the specification;
   a mismatch means one of the two is wrong.
 - Over-broad assertions — `toBeTruthy`, `toBeDefined`, `not.toBeNull` — where
