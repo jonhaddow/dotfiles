@@ -82,16 +82,15 @@ wait for the fresh CI — the watch covers it.
 - **Should this be split?** — only if the review says so: the seam, and that
   it's still draft pending your call
 - **Fixed and pushed** — one line each
-- **For your judgement** — numbered, most serious first, in the review's
-  short form (`file:line` / Risk / Call / Lean). A skipped mechanical fix
-  carries the skip reason as its `Risk` line.
+- **For your judgement** — exactly as `pr-review` printed them, order and
+  wording untouched. A skipped mechanical fix joins them, the skip reason
+  standing in for the recommendation.
 - Verdict, implementer flags, branch name
 - The review file path, last
 
 The user never saw the diff — an agent wrote it. So the short form is the
 whole report: no mechanism, no reasoning chain, no quoting from the review
-file. Four lines a finding, and the file holds the rest. Fix nothing
-further. No process recap.
+file. The file holds the rest. Fix nothing further. No process recap.
 
 ## 8. Watch
 
