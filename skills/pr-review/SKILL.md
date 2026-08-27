@@ -94,17 +94,9 @@ The short form, and nothing else. Never the file's contents.
 
 Judgement findings, most serious first:
 
-```
-2. src/auth/session.ts:88
-   Risk:  Session survives logout in a second tab.
-   Call:  Fix now / ship and log it / leave to the reviewer.
-   Lean:  Fix now — one line, and it fails silently.
-```
+2. Session survives logout in a second tab. Recommendation: **fix now** — the session is a security boundary, and a user could be tricked into leaving it open.
 
-Four lines each, hard cap. `Risk` is what breaks for a person using the
-software, not the mechanism. `Call` is the decision open to the reader.
-`Lean` is your recommendation. A reader with no memory of the diff can act
-on all three — that's the test. They can open the file for the argument.
+A reader with no memory of the diff should be able to act — that's the test. They can open the file for the argument.
 
 Mechanical findings: one line each, `file:line — what`. The caller fixes
 them; nobody is deciding anything.
