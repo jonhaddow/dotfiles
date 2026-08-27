@@ -39,6 +39,13 @@ bullet, and "PR1" is the user's name for it. Work out:
 Produce a scope brief: the unit plus every constraint, written out. The
 agent never reads the plan.
 
+**Carry the ticket key into the brief** when the unit's row has one.
+`raise-pr`'s PROCEDURE.md makes the key conditional on the caller supplying
+it — no key given, no key line — and forbids recovering one from the branch
+name. So the implementer emits a keyless PR and is right to. Reading the key
+to move the ticket is not the same as passing it on; that omission is
+invisible until the PR is already up.
+
 ## 2. Confirm
 
 State the unit, the base branch and why, anything ambiguous. Carrying a
@@ -53,7 +60,10 @@ write-back, worktree stays.
 
 Differences:
 
-- **Branch name** (its step 2): name it after the unit
+- **Branch name** (its step 2): name it after the unit, prefixed with the
+  unit's Jira key when it has one (`DEV-123-add-cart-totals`). The branch
+  name is what a PR list, a CI run and a worktree directory show first —
+  the key there ties all three back to the ticket
 - **Write-back** (after its step 3): as soon as the draft PR exists, do
   step 4 below — the number won't change
 - **Ticket** (after its step 3): step 5 below
