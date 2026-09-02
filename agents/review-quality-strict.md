@@ -35,6 +35,8 @@ Above all, be **ambitious** about code structure. Do not merely identify local c
 
 7. **Treat unnecessary sequential orchestration and non-atomic updates as design smells when the cleaner structure is obvious.** If independent work is serialized for no good reason, ask whether the flow should run in parallel. If related updates can leave state half-applied, push for a more atomic structure. Do not over-index on micro-optimizations, but do flag avoidable orchestration complexity that makes the implementation more brittle.
 
+8. **Comments must carry something the code cannot.** A comment earns its place only when the code is not self-descriptive or the author has something to say about the implementation. Flag for removal any comment that restates the code, narrates the change ("previously", "updated to"), or describes an AI session or plan ("Phase 3", "PR2 of the plan"). The fix is deletion.
+
 ### Primary review questions
 
 For every meaningful change, ask:

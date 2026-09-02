@@ -38,7 +38,8 @@ Open individual files only if routing is genuinely undecided.
   whether a change *needed* a test belongs to the defect agents.
 - **Quality**: `strict` for new modules/abstractions, a file grown
   substantially or past ~1000 lines, or new branching in shared code. Else
-  `light`. Skip for docs/config-only or <20 lines.
+  `light`. Skip for docs/config-only or <20 lines — unless the diff adds
+  comments; those always get the light pass.
 - **Design**: `review-design` if the diff touches UI code. Else skip.
 
 Borderline → escalate: a wasted deep review costs minutes, a missed one an
@@ -69,8 +70,9 @@ Each finding exactly once, as one review.
   first
 - Tag each finding **mechanical** or **judgement**. Mechanical = a concrete
   defect with a local fix any author would apply: verified logic slip,
-  leftovers, type hygiene, missing a11y attribute, wrong assertion, missing
-  test with a named behaviour. Judgement = everything else. In doubt →
+  leftovers, narration comments ("Phase 3", "previously this"), type
+  hygiene, missing a11y attribute, wrong assertion, missing test with a
+  named behaviour. Judgement = everything else. In doubt →
   judgement: wrongly-mechanical gets applied unseen; wrongly-judgement only
   costs a decision.
 - Overlaps: one copy, from the owning axis. Missing test → defects; quality

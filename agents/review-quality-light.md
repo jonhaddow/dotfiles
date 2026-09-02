@@ -21,6 +21,7 @@ Review against this checklist — report proposed changes, never apply them:
 2. **Simplification** — branches that collapse, state that could be derived instead of stored, wrappers that add nothing, dead parameters, needless indirection.
 3. **Efficiency** — obvious wasted work: repeated computation in loops, sequential awaits of independent calls, re-renders from unstable references.
 4. **Altitude** — logic sitting in the wrong file or layer when a canonical home exists.
+5. **Comments** — a comment earns its place only when the code is not self-descriptive or the author has something to say about the implementation (a constraint, a trade-off, a non-obvious why). Flag for removal: comments that restate the code; comments that narrate the change ("updated to", "previously this", "replaced X with"); and comments that describe an AI session or plan ("Phase 3", "PR2 of the plan", "as requested"). The fix is deletion, not rewording.
 
 ## What to skip
 
