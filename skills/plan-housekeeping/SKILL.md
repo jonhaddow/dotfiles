@@ -61,7 +61,7 @@ step 5. Say which tickets will move before the first one moves.
 
 A run that died left its worktree on disk, holding a branch and a
 `node_modules`. This session created none, so everything under
-`.claude/worktrees/` is a leftover:
+`~/.claude/worktrees/<repo>/` is a leftover:
 
 ```bash
 git worktree list

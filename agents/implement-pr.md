@@ -21,7 +21,9 @@ Unrelated problems: report at the end, don't fix.
 
 ## 1. Enter and install
 
-`EnterWorktree` with the path, then worktree skill part 3: every edit inside
+Work at the absolute path you were given — `git -C <path>`, absolute paths
+for Read/Edit/Write. Don't call `EnterWorktree`; it rejects worktrees outside
+the repo. Then worktree skill part 3: every edit inside
 the worktree, branch already checked out (don't create or rename), install
 frozen from the lockfile. Lockfile moved without a dependency change →
 `git checkout -- <lockfile>`.

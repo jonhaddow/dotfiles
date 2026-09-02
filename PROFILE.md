@@ -12,7 +12,9 @@
 
 - A change that becomes its own PR gets a throwaway worktree — always when
   the work goes to a subagent. The `worktree` skill holds the lifecycle.
-- Exception: my checkout is already on the branch → just work in it.
+- My checkout being on the target branch is **not** a reason to work in it.
+  I switch branches to review. Use `git worktree add --detach` and push
+  with `HEAD:<branch>`.
 
 # Checks before a PR
 
